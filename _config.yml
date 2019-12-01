@@ -87,8 +87,11 @@ theme: next
 deploy:
   # type:
   type: git
-	repository: https://github.com/Saturday24/Saturday24.github.io
-	branch: master
+	# repository: https://github.com/Saturday24/Saturday24.github.io
+	# branch: master
+  repo:
+    github: git@github.com:Saturday24/Saturday24.github.io.git,master
+    coding: git@e.coding.net:leochen24/leochen24.git,master
 
 jsonContent:
     meta: false
