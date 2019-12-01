@@ -13,14 +13,14 @@ tags:
 > # 一、Solidity的介绍
 Solidity是目前区块链中，开发智能合约最常用、也是最流行的语言，运行在**Ethereum虚拟机**（EVM）之上。它的语法接近于**Javascript**，是一种面向对象的语言，真正意义上运行在网络上的去中心化合约。
 
-<!-- more -->
-
 ## 1. 文档地址
 官方文档：[https://solidity.readthedocs.io](https://solidity.readthedocs.io).（英文）
 中文翻译版： [https://solidity-cn.readthedocs.io/zh/develop/](https://solidity-cn.readthedocs.io/zh/develop/).（中文版版本较旧，但不影响基础学习）
 # 二、编译合约
 ## 1.编译方式
 编译合约有很多种办法：可以使用**Remix**进行在线编译，可以使用**solcjs命令行**编译，也可以使用**solc、node.js**进行编译。
+
+<!-- more -->
 
 ## 2.remix
 此篇文章中，我们使用的[Remix](http://remix.ethereum.org)这个在线**IDE**进行编译的。

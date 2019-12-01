@@ -14,8 +14,6 @@ tags:
 
 > 结果安装完后，准备安装需要用到的插件，结果发现**Package Control** 打不开。试过很多次依然打不开。之前从来没有遇到过这个问题。
 
-<!-- more -->
-
 然后Google了一下，发现类似的问题很少出现，后来在Github的Sublime Text3官方问题区，找到了如何解决的方式。
 
 **步骤如下：**
@@ -32,6 +30,8 @@ There are no packages available for installation - Package Control of Sublime Te
 
 Package Control: Unable to download https://packagecontrol.io/channel_v3.json after 3 attempts
 ```
+
+<!-- more -->
 
 就是安装插件的那个Package Control在需要拿到channel url下的地址，从而获取插件的配置项和依赖。
 

@@ -12,8 +12,6 @@ tags:
 
 > 供参考脚本：https://github.com/Saturday24/Smart-Contracts-Script
 
-<!-- more -->
-
 ##  1.编译脚本
 		a.install -- web3 solc fs path 
 		b.编译: node compiler.js
@@ -24,6 +22,8 @@ tags:
 	  部署: node deploy.js
 将.**abi**、.**json文件**以及**所需参数**传递给部署脚本，部署脚本，执行成功则返回合约地址，供前端调用。
 **注**：部署合约所消耗的gas可以通过调用web3的**web3**.**eth**.**estimateGas**()的方法来预估计算，并填入**deploy**函数中。
+
+<!-- more -->
 
 安装 Truffle - https://truffleframework.com/truffle
 安装 Ganache - https://truffleframework.com/ganache

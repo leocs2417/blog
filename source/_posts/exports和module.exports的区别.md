@@ -10,19 +10,27 @@ tags:
 	- 笔记
 ---
 
-> 使用 require 时，exports 和 module.exports 的区别
-
-<!-- more -->
+> 使用 **require** 时，**exports** 和 **module.exports** 的区别
 
 1. require:
+
+```
 	a. commonjs 规范
 	b. require 缓存策略
 	c. 同步异步
+```
 
 
 2. module
-	a. has property: exports(type: Obj)
+
+```
+	a. has property: exports(type: Object)
 	b. exports 只是 module.exports 的引用
+```
+
+<!-- more -->
+
+3. 实例
 
 ```
 //koala.js
@@ -52,4 +60,4 @@ exports = module.exports
 
 复制代码原理很简单，即 module.exports 指向新的对象时，exports 断开了与 module.exports 的引用，那么通过 exports = module.exports 让 exports 重新指向 module.exports 即可。
 
-转自：https://juejin.im/post/5d5639c7e51d453b5c1218b4
+参考文章：https://juejin.im/post/5d5639c7e51d453b5c1218b4
