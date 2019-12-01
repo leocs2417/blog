@@ -143,7 +143,7 @@ tags:
         - 最后，**渲染结果**将传递给Browser进程。
     3. Browser进程收到结果并将结果绘制出来。
 
-通信过程的过程：
+通信的过程：
 !['Browser communication'](/assets/image/browser-communication.png)
 
 注：以上，应该就是浏览器的一套运作流程了。（再往下深挖，看源码解析吧= =！）
