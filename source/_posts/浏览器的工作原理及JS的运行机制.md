@@ -304,7 +304,8 @@ eg.
 
 - **macrotask（宏任务）：**script标签包含的code、**setTimeout**、**setInterval**、**setImmediately**、**I/O**等。（可以看到，事件队列中的每一个事件都是一个macrotask）
 
-- **microtask（微任务）：****Promise**，**process.nextTick**等。
+- **microtask（微任务）：** **MutationObserver**，**Promise**，**process.nextTick**等
+(浏览器中的优先级：process.nextTick > Promise > MutationObserver)。
 
 总结：
 
