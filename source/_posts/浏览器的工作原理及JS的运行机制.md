@@ -21,9 +21,9 @@ tags:
 - 事件循环进阶：macrotask与microtask
 - 浏览器的安全
 
-### 1. 宏观视角下的浏览器
+## 宏观视角下的浏览器
 
-#### Chrome架构：仅仅打开一个页面，为什么有多个进程？
+### Chrome架构：仅仅打开一个页面，为什么有多个进程？
 
 <!-- more -->
 
@@ -62,7 +62,7 @@ tags:
 
 ![](/assets/image/process.png)
 
-#### 多进程的优势？
+### 多进程的优势？
 
 - 单个页面或第三方插件**Crash**，不会影响整个浏览器。
 
@@ -70,14 +70,14 @@ tags:
 
 - 方便使用沙盒模型隔离插件等进程，提高稳定性。
 
-#### HTTP请求流程：为什么很多网站第二次打开会快很多？
+### HTTP请求流程：为什么很多网站第二次打开会快很多？
 
 - DNS缓存
 - 页面资源缓存
 
 详细供参考链接：https://zhuanlan.zhihu.com/p/38240894
 
-#### 导航流程：从输入URL到页面展示，中间发生了什么？
+### 导航流程：从输入URL到页面展示，中间发生了什么？
 
 简化版：
 
@@ -91,7 +91,7 @@ tags:
 
 详细供参考链接：https://zhuanlan.zhihu.com/p/23155051
 
-### 2. 浏览器内核（即Renderer进程）- 重点
+## 浏览器内核（即Renderer进程）- 重点
 
 大多时候，对于前端开发来讲，最重要、最需要清楚的就是**浏览器的渲染，即Renderer进程：**
 
@@ -99,7 +99,7 @@ tags:
 
 - 浏览器Renderer进程，即Renderer进程是**多线程的**。
 
-#### 主要包含哪些线程：
+### 主要包含哪些线程：
 1. GUI渲染线程
     
     - 负责浏览器的界面渲染。
@@ -131,7 +131,7 @@ tags:
     - 将检测到状态变更时，如果设置有回调函数，异步线程就产生状态变更事件，将这个回调再放入事件队列中。再由JS引擎执行。
 
 
-#### HTML，CSS，JavaScript是如何变成页面的？
+### HTML，CSS，JavaScript是如何变成页面的？
 
 1. 根据HTML生成DOM Tree。
 2. 根据CSS生成CSSOM。
@@ -141,9 +141,9 @@ tags:
 
 参考图：![Render process](/assets/image/render-page.png)
 
-#### WebWorker（HTML5 API）（简略）
+### WebWorker（HTML5 API）（简略）
 
-##### 应用场景：
+#### 应用场景：
 
 - 比如页面中包含耗时较大的算法代码时，就会阻塞线程影响浏览器渲染等。这时候就可把比较耗时的代码，放到**WebWorker**(另一个线程)中执行。
 
@@ -161,9 +161,9 @@ tags:
 
 详细供参考链接：https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
-#### SharedWorker（简略）
+### SharedWorker（简略）
 
-##### 应用场景：
+#### 应用场景：
 
 - 多个标签页、iframe之间的通信。
 
@@ -175,7 +175,7 @@ tags:
 
 详细供参考链接：https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker
 
-### 3. Browser进程与Renderer进程的通信具体实例
+## Browser进程与Renderer进程的通信具体实例
 
 1. 当我们打开**任务管理器**后，新打开一个浏览器后，**任务管理器**中相应的增加了两个进程：
     
@@ -199,9 +199,9 @@ tags:
 通信的过程参考图：
 !['Browser communication'](/assets/image/browser-communication.png)
 
-### 4. V8工作原理（简略）
+## V8工作原理（简略）
 
-#### 栈空间和堆空间：数据是如何存储的？
+### 栈空间和堆空间：数据是如何存储的？
 
 - 在JavaScript的执行过程中，主要有三种类型内存空间：代码空间、栈空间、堆空间。
 
@@ -211,24 +211,24 @@ tags:
 
 - 原始类型的赋值会完整复制变量值，而引用类型的赋值是复制引用地址。
 
-#### 垃圾回收：垃圾数据是如何自动回收的？
+### 垃圾回收：垃圾数据是如何自动回收的？
 
 对一些不需要的数据，我们称之为垃圾数据，由于内存是有限的，为了释放内存，我们需要对这么垃圾数据进行回收：
 
 详细供参考链接：https://zhuanlan.zhihu.com/p/23992332
 
 
-#### 编译器和解释器：V8中是如何执行一段JS代码的？
+### 编译器和解释器：V8中是如何执行一段JS代码的？
 
 详细供参考链接：https://juejin.im/post/5dc4d823f265da4d4c202d3b
 
-### 5. 浏览器中的JS运行机制 - 重点
+## 浏览器中的JS运行机制 - 重点
 
 当页面渲染首次完毕之后，就到了JS引擎线程运行的机制分析：
 
 这里主要从EventLoop来说一下JS的执行。
 
-#### 1. 几个概念：
+### 几个概念：
 - JS分同步任务和异步任务。
 
 - 同步任务在**主线程**上执行，会形成一个**执行栈**。
@@ -240,7 +240,7 @@ tags:
 流程如图：
     !['Event process img'](/assets/image/evt.png)
 
-#### 2. 定时器：
+### 定时器：
 
 上边的EventLoop机制的核心就是：**JS引擎线程**和**事件触发线程**。
 
@@ -278,9 +278,9 @@ eg.
 
 注：有时候**setTimeout**不能准确按照制定的延时时间执行，就是因为可能在它排在任务队列中时，主线程不是空闲状态，正在执行其它任务，所以会造成误差。
 
-#### 3. **macrotask与microtask：**
+### **macrotask与microtask：**
 
-##### JS任务类型分两种：**macrotask(宏任务)与microtask(微任务)**
+#### JS任务类型分两种：**macrotask(宏任务)与microtask(微任务)**
 
 1. macrotask - task:
 
@@ -341,7 +341,7 @@ eg.
     console.log(6);
 
 
-### 6. 浏览器安全（简略）
+## 浏览器安全（简略）
 
 - 同源策略：为什么XMLHttpRequest不能跨域请求资源？
 
