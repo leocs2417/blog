@@ -1,3 +1,3 @@
-# Hexo blog 
-### The origin theme by:  
-Next - https://github.com/theme-next/hexo-theme-next
+# Personal blog.
+
+> Some knowledge in work and study.
