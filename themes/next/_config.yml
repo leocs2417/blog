@@ -144,10 +144,10 @@ scheme: Gemini
 # External url should start with http:// or https://
 menu:
   home: / || home
-  about: /about/ || user
+  # about: /about/ || user
   tags: /tags/ || tags
   # categories: /categories/ || th
-  archives: /archives/ || archive
+  # archives: /archives/ || archive
   #schedule: /schedule/ || calendar
   #sitemap: /sitemap.xml || sitemap
   #commonweal: /404/ || heartbeat
@@ -165,8 +165,8 @@ menu_settings:
 
 sidebar:
   # Sidebar Position.
-  # position: left
-  position: right
+  position: left
+  # position: right
 
   # Manual define the sidebar width. If commented, will be default for:
   # Muse | Mist: 320
@@ -205,7 +205,7 @@ site_state: true
 # Value before `||` delimiter is the target permalink.
 # Value after `||` delimiter is the name of Font Awesome icon. If icon (with or without delimiter) is not specified, globe icon will be loaded.
 social:
-  GitHub: https://github.com/Saturday24 || github
+  GitHub: https://github.com/xingqiliu2417 || github
   #E-Mail: mailto:yourname@gmail.com || envelope
   #Weibo: https://weibo.com/yourname || weibo
   #Google: https://plus.google.com/yourname || google
@@ -278,10 +278,8 @@ read_more_btn: true
 # Post meta display settings
 post_meta:
   item_text: true
-  created_at: true
-  updated_at:
-    enable: false
-    another_day: true
+  created_at: false
+  updated_at: false
   categories: true
 
 # Post wordcount display settings
@@ -959,8 +957,8 @@ three:
 # Dependencies: https://github.com/theme-next/theme-next-canvas-nest
 # For more information: https://github.com/hustcc/canvas-nest.js
 canvas_nest:
-  enable: true
-  onmobile: true # Display on mobile or not
+  enable: false
+  onmobile: false # Display on mobile or not
   color: "0,0,255" # RGB values, use `,` to separate
   opacity: 0.5 # The opacity of line: 0~1
   zIndex: -1 # z-index property of the background

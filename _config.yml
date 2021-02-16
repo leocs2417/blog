@@ -3,8 +3,8 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Saturday24
-subtitle: '喝着咖啡就大蒜，秋水长天一色。' # 大道至简。
+title: Leo Chen's Blog
+subtitle: '一叶浮萍归大海，人生何处不相逢。'
 description: 'Not perfect, so need to learn.'
 keywords: 'JS, 前端, FE'
 author: Leo Chen
@@ -87,7 +87,6 @@ theme: next
 deploy:
   type: git
   repo:
-    github: git@github.com:Saturday24/Saturday24.github.io.git,master
     coding: git@e.coding.net:leochen24/leochen24.git,master
 
 jsonContent:
