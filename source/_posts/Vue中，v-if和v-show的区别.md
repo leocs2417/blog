@@ -5,11 +5,9 @@ date: 2019-10-13 22:00
 comments: true
 categories:
   - Vue
-  - JS
 tags:
   - JS
   - Vue
-  - 笔记
 ---
 
 > ## v-if: 

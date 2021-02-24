@@ -5,11 +5,9 @@ date: 2019-11-11 21:00
 comments: true
 categories:
   - Vue
-  - JS
 tags:
   - JS
   - Vue
-  - 笔记
 ---
 
 > nextTick 是 Vue 提供的一个官方 API，在 Vue 内部实现中，也经常用到。

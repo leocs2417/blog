@@ -4,7 +4,6 @@ title: "使用Node.js Sequelize操作CentOS远程服务器的Mysql"
 date: 2018-02-18 15:00
 comments: true
 categories:
-    - JS
     - Node.js
 tags:
     - Node.js

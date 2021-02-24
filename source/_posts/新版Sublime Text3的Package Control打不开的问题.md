@@ -7,7 +7,6 @@ categories:
  	- IDE
 tags:
 	- IDE
-	- 笔记
 ---
 
 > 前一段时间电脑上的Sublime Text3 突然不太好用，索性就卸载重装了一个。

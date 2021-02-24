@@ -7,7 +7,6 @@ categories:
  	- Git
 tags:
 	- Git
-	- 笔记
 ---
 
 > 最近写blog的代码，误操作把带有自己邮箱的SMTP的后台接口文件一起push到远程仓库了。

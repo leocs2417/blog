@@ -5,11 +5,9 @@ date: 2019-10-15 22:00
 comments: true
 categories:
   - Vue
-  - JS
 tags:
   - JS
   - Vue
-  - 笔记
 ---
 
 > template 中，内嵌的表达式，可以添加简单的运算，以便动态绑定显示一些值。

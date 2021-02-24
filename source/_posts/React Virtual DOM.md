@@ -5,10 +5,9 @@ date: 2020-07-14 22:00
 comments: true
 categories:
     - React
-    - JS
 tags:
-    - JS
     - React
+    - JS
 ---
 
 > 如大家熟知，在目前主流的JS框架中，React, Vue均使用了虚拟DOM概念，来进行**数据驱动视图的更新**。

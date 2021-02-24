@@ -7,7 +7,6 @@ categories:
  	- JS
 tags:
 	- JS
-	- 笔记
 ---
 
 > 使用 **require** 时，**exports** 和 **module.exports** 的区别

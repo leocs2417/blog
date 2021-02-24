@@ -5,7 +5,6 @@ date: 2019-02-13 21:00
 comments: true
 categories:
 		- 浏览器
-		- JS
 tags:
 		- 浏览器
 		- JS

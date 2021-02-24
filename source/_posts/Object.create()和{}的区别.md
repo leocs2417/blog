@@ -5,10 +5,8 @@ date: 2020-03-30 00:30
 comments: true
 categories:
   - JS
-  - Vue
 tags:
   - JS
-  - 笔记
 ---
 
 > 在 Vue 源码中，创建新对象都使用了`Object.create(null)`，而没有使用`{}`。
