@@ -5,9 +5,10 @@ date: 2019-06-06 20:00
 comments: true
 categories:
  	- JS
-tags: 
     - 浏览器
+tags: 
     - JS
+    - 浏览器
 ---
 
 > 浏览器的工作原理及JS的运行机制。

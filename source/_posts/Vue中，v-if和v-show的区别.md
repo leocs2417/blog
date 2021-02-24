@@ -4,10 +4,11 @@ title: 'Vue中，v-if和v-show的区别.md'
 date: 2019-10-13 22:00
 comments: true
 categories:
+  - Vue
   - JS
 tags:
   - JS
-  - Vue.js
+  - Vue
   - 笔记
 ---
 

@@ -4,10 +4,11 @@ title: "使用Node.js Sequelize操作CentOS远程服务器的Mysql"
 date: 2018-02-18 15:00
 comments: true
 categories:
- 	- Node.js
-tags: 
-	- Node.js
-	- Mysql
+    - JS
+    - Node.js
+tags:
+    - Node.js
+		- Mysql
 ---
 
 > 前端有时候也需要自己写后端以及数据库的代码，可能会使用Node.js作为服务端代码，并与数据库连接进行数据交互。

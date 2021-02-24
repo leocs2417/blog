@@ -1,13 +1,14 @@
 ---
 layout: post
-title: 'Vue.js中，计算属性vs方法vs侦听属性'
+title: 'Vue中，计算属性vs方法vs侦听属性'
 date: 2019-10-15 22:00
 comments: true
 categories:
+  - Vue
   - JS
 tags:
   - JS
-  - Vue.js
+  - Vue
   - 笔记
 ---
 

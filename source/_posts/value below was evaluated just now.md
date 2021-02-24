@@ -4,10 +4,11 @@ title: "浏览器中console.log()，出现'value below was evaluated just now'�
 date: 2019-02-13 21:00
 comments: true
 categories:
- 	- JS
-tags: 
-    - 浏览器
-    - JS
+		- 浏览器
+		- JS
+tags:
+		- 浏览器
+		- JS
 ---
 
 > 偶然一次，在浏览器控制台，使用console.log()打印调试代码的时候，发现这样一个现象：

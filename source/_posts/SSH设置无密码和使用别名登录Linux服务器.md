@@ -5,7 +5,7 @@ date: 2018-03-18 19:00
 comments: true
 categories:
  	- Linux
-tags: 
+tags:
 	- Linux
 	- SSH
 ---

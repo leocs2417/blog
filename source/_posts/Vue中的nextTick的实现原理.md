@@ -1,13 +1,14 @@
 ---
 layout: post
-title: 'Vue源码中，nextTick的实现原理'
+title: 'Vue中, nextTick的实现原理'
 date: 2019-11-11 21:00
 comments: true
 categories:
-  - Vue源码
+  - Vue
+  - JS
 tags:
   - JS
-  - Vue.js
+  - Vue
   - 笔记
 ---
 

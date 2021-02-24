@@ -5,7 +5,7 @@ date: 2019-06-22 21:00
 comments: true
 categories:
  	- JS
-tags: 
+tags:
     - JS
     - ES6
 ---

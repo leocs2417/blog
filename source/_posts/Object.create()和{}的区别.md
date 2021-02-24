@@ -5,6 +5,7 @@ date: 2020-03-30 00:30
 comments: true
 categories:
   - JS
+  - Vue
 tags:
   - JS
   - 笔记
