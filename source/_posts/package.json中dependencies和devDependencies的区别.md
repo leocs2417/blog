@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "package.json中dependencies和devDependencies的区别"
-date: 2019-09-12 21:00
+date: 2019-03-12 21:00
 comments: true
 categories:
  	- 包管理
