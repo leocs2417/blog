@@ -246,14 +246,6 @@ export const store = createStore(reducer, applyMiddleware(logger));
 
 上面的结构的意思是说enhancer作为一个函数, 传进来一个参数StoreCreator, 同时return的也是一个StoreCreator相同结构的函数.
 
-```JavaScript
-{
-  subscribe,
-  dispatch,
-  getState
-}
-```
-
 #### 使createStore支持enhancer
 
 代码:
