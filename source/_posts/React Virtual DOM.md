@@ -18,7 +18,7 @@ tags:
 
 - 深入了解虚拟DOM
 
-- 虚拟DOM中的diff算法
+- 虚拟DOM中的diff概念
   
 <!-- more -->
 
