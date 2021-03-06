@@ -88,7 +88,7 @@ deploy:
   type: git
   repo:
     coding: git@e.coding.net:leochen24/leochen24/leochen24.git,master
-    gitee: git@gitee.com:leochen01/leochen01.git,master
+    gitee: git@gitee.com:leocs/leocs.git,master
 
 jsonContent:
     meta: false
