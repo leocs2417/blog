@@ -88,7 +88,8 @@ theme: next
 deploy:
   type: git
   repo:
-    gitee: git@gitee.com:leocs/leocs.git,master
+    gitee: git@gitee.com:leocs/leocs.git
+    brach: master
 
 jsonContent:
     meta: false
