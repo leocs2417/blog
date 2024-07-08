@@ -87,9 +87,8 @@ theme: next
 # coding: git@e.coding.net:leochen24/leochen24/leochen24.git,master
 deploy:
   type: git
-  repo:
-    gitee: git@gitee.com:leocs/leocs.git
-    brach: master
+  repo: git@github.com:leocs2417/blog.git
+  brach: master
 
 jsonContent:
     meta: false
