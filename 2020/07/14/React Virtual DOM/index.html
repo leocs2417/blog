@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 2px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true},
+    copycode: {"enable":true,"show_result":true,"style":"flat"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":"auto","trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="如大家熟知，在目前主流的JS框架中，React, Vue均使用了虚拟DOM概念，来进行数据驱动视图的更新。  下面我们分三个部分讨论一下虚拟DOM在React中的原理和特点。  什么是虚拟DOM?  深入了解虚拟DOM  虚拟DOM中的diff概念">
+<meta name="keywords" content="JS,React">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Virtual DOM">
+<meta property="og:url" content="http://yoursite.com/2020/07/14/React Virtual DOM/index.html">
+<meta property="og:site_name" content="Leo Chen&#39;s Blog">
+<meta property="og:description" content="如大家熟知，在目前主流的JS框架中，React, Vue均使用了虚拟DOM概念，来进行数据驱动视图的更新。  下面我们分三个部分讨论一下虚拟DOM在React中的原理和特点。  什么是虚拟DOM?  深入了解虚拟DOM  虚拟DOM中的diff概念">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/assets/image/reactState.jpg">
+<meta property="og:image" content="http://yoursite.com/assets/image/reactDiff.jpg">
+<meta property="og:image" content="http://yoursite.com/assets/image/reactKeys.jpg">
+<meta property="og:updated_time" content="2024-07-08T11:21:57.815Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Virtual DOM">
+<meta name="twitter:description" content="如大家熟知，在目前主流的JS框架中，React, Vue均使用了虚拟DOM概念，来进行数据驱动视图的更新。  下面我们分三个部分讨论一下虚拟DOM在React中的原理和特点。  什么是虚拟DOM?  深入了解虚拟DOM  虚拟DOM中的diff概念">
+<meta name="twitter:image" content="http://yoursite.com/assets/image/reactState.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/07/14/React Virtual DOM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>React Virtual DOM | Leo Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leo Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">一叶浮萍归大海，人生何处不相逢。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/14/React Virtual DOM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpeg">
+      <meta itemprop="name" content="Leo Chen">
+      <meta itemprop="description" content="Not perfect, so need to learn.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leo Chen's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React Virtual DOM
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>如大家熟知，在目前主流的JS框架中，React, Vue均使用了虚拟DOM概念，来进行<strong>数据驱动视图的更新</strong>。</p>
+</blockquote>
+<p>下面我们分三个部分讨论一下虚拟DOM在React中的原理和特点。</p>
+<ul>
+<li><p>什么是虚拟DOM?</p>
+</li>
+<li><p>深入了解虚拟DOM</p>
+</li>
+<li><p>虚拟DOM中的diff概念</p>
+</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="什么是虚拟DOM"><a href="#什么是虚拟DOM" class="headerlink" title="什么是虚拟DOM?"></a>什么是虚拟DOM?</h2><ol>
+<li><p>DOM本质：<strong>浏览器</strong>的概念，用js对象来表示页面上的元素，并提供了<strong>操作dom对象的API</strong>。</p>
+</li>
+<li><p>虚拟DOM：用<strong>js对象</strong>的形式，来模拟页面上Dom嵌套关系。(格式见部分二)</p>
+</li>
+</ol>
+<h2 id="深入了解虚拟DOM"><a href="#深入了解虚拟DOM" class="headerlink" title="深入了解虚拟DOM:"></a>深入了解虚拟DOM:</h2><h3 id="1-一段代码："><a href="#1-一段代码：" class="headerlink" title="1. 一段代码："></a>1. 一段代码：</h3><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line"><span class="built_in">  return</span> (</span><br><span class="line">    &lt;<span class="keyword">div</span>&gt;hello world&lt;/<span class="keyword">div</span>&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>过程：当组件的<code>state</code>或者<code>props</code>发生改变的时候，render函数就会重新执行。重新渲染页面。</li>
+</ul>
+<h3 id="2-一些相关的思考："><a href="#2-一些相关的思考：" class="headerlink" title="2. 一些相关的思考："></a>2. 一些相关的思考：</h3><ul>
+<li><p>a. 如果没有React，我们该如何实现<strong>数据变化，更新视图</strong>的功能？</p>
+</li>
+<li><p>思路1： </p>
+<ol>
+<li><p>定义<code>state</code>, 先有数据</p>
+</li>
+<li><p><code>jsx</code>模板</p>
+</li>
+<li><p><code>state</code> + <code>template</code>  结合 -&gt; 生成真实的DOM，渲染</p>
+</li>
+<li><p><code>state</code>发生改变</p>
+</li>
+<li><p><code>state</code> + <code>template</code> 结合 -&gt; 生成新的DOM，替换原始的DOM</p>
+</li>
+</ol>
+</li>
+<li><p>思路1的缺陷：</p>
+<p>第一次生成了一个完整的DOM片段</p>
+<p>第二次生成了一个完整的DOM片段</p>
+<p>第二次生成的DOM替换第一次的DOM，<strong>非常耗性能</strong></p>
+</li>
+<li><p>思路1的改良尝试：思路2:</p>
+<ol>
+<li><p>定义state, 先有数据</p>
+</li>
+<li><p><code>jsx</code>模板</p>
+</li>
+<li><p><code>state</code> + <code>template</code> 结合 -&gt; 生成真实的DOM， 渲染</p>
+</li>
+<li><p><code>state</code>发生改变</p>
+</li>
+<li><p><code>state</code> + <code>template</code> 结合 -&gt; 生成新的DOM，<strong>并不直接</strong>替换原始的DOM</p>
+</li>
+<li><p>新的DOM(<code>Document Fragment</code>：文档碎片)和原始的DOM做比对，找差异</p>
+</li>
+<li><p>eg: 找出<code>input</code>框发生了变化</p>
+</li>
+<li><p>只用新的DOM中的改变的<code>input</code>元素，替换掉老的DOM中的<code>input</code>元素 <strong>此步骤性能得以提升</strong></p>
+</li>
+</ol>
+</li>
+<li><p>2的缺陷：DOM比对，多消耗性能，故性能的提升并不明显。</p>
+</li>
+<li><p>思路3：</p>
+<ol>
+<li><p><code>state</code>数据</p>
+</li>
+<li><p><code>jsx</code>模板</p>
+</li>
+<li><p><code>state</code> + <code>template</code> 结合，生成真实DOM，来显示</p>
+</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"abc"</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>Hello, world<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ol start="4">
+<li><p>生成虚拟DOM(虚拟DOM就是一个JS对象，用来<strong>描述</strong>真实DOM)</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">'div</span>', &#123;id: <span class="symbol">'abc</span>'&#125;, [<span class="symbol">'span</span>', &#123;&#125;, <span class="symbol">'Hello</span>, world']]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当 state发生变化 eg: Hello, world -&gt; Bye bye</p>
+</li>
+<li><p><code>state</code> + <code>template</code> 生成新的虚拟DOM (<strong>极大的提升了性能</strong>)</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">'div</span>', &#123;id: <span class="symbol">'abc</span>'&#125;, [<span class="symbol">'span</span>', &#123;&#125;, <span class="symbol">'Bye</span> bye']]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>比较原始的虚拟DOM和新的虚拟DOM的区别，eg: 找到区别：是<code>span</code>中的内容</p>
+</li>
+<li><p>直接操作DOM，改变<code>span</code>中的内容</p>
+</li>
+</ol>
+<ul>
+<li>3性能的减弱：生成虚拟DOM，多生成了一个JS对象，</li>
+</ul>
+<p>但是， 生成一个JS对象相对的代价非常小；JS生成<strong>DOM</strong>代价极高：JS创建一个JS对象很简单，而创建DOM需要调用Web Appliction级别的API，性能损耗较大</p>
+<ul>
+<li><p>c性能的提升点： </p>
+<ol start="6">
+<li><p>生成新的虚拟DOM，创建了一个JS对象，极大的提升性能</p>
+</li>
+<li><p>比对虚拟DOM，极大的提升性能</p>
+</li>
+</ol>
+</li>
+</ul>
+<p><strong>注：</strong> 实际上，真实的react中，先生成虚拟DOM，然后根据虚拟DOM的结构，生成真实的DOM，来显示</p>
+<ul>
+<li>一段代码：</li>
+</ul>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      /<span class="regexp">/ JSX -&gt; `createElement` -&gt; 虚拟DOM(JS 对象) -&gt; 真实的DOM</span></span><br><span class="line"><span class="regexp">      &lt;div&gt;&lt;span&gt;hello, world&lt;/span</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">      /</span><span class="regexp">/ return React.createElement('div', &#123;&#125;, React.createElement('span', &#123;&#125;, 'hello, world' ))</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样做的优点：</p>
+<ol>
+<li><p>性能提升了。</p>
+</li>
+<li><p>它使得跨端应用得以实现。RN(只有浏览器识别真实DOM，故可以通过虚拟DOM，被原生移动端识别)</p>
+</li>
+</ol>
+<h2 id="虚拟DOM中的diff算法"><a href="#虚拟DOM中的diff算法" class="headerlink" title="虚拟DOM中的diff算法:"></a>虚拟DOM中的diff算法:</h2><ol>
+<li><p>先看一下todolist demo:</p>
+</li>
+<li><p>几个问题：</p>
+</li>
+</ol>
+<ul>
+<li><p>问题1：什么时候会发生数据的变化？</p>
+<p>props, state的改变-&gt; 归根结底都是调用setState的时候</p>
+</li>
+<li><p>问题2：哪一步需要diff? </p>
+<p>比较原始虚拟DOM和新的虚拟DOM的比对，找出差异。</p>
+</li>
+<li><p>问题3：setSate 关键字：异步 (为什么？若连续setState三次，之更新一次虚拟DOM)</p>
+<p><img src="/assets/image/reactState.jpg" alt="&#39;state&#39;"></p>
+</li>
+<li><p>问题4：怎么比对的？逻辑是什么？</p>
+<p>从顶层开始，逐层，同层比对：<br><img src="/assets/image/reactDiff.jpg" alt="&#39;diff&#39;"></p>
+<p>a. 做法：若某一层不同，下边所有节点全部更新。</p>
+<p>b. 另一个问题：若是这样做，只有外层一层不一样，下边所有子节点全相同，岂不是很浪费？</p>
+<p>c. 为什么这样：同层比对的算法，简单，比对速度快，进而减少了比对算法上的性能消耗</p>
+</li>
+</ul>
+<ol start="3">
+<li><p>without keys VS with keys</p>
+<p><img src="/assets/image/reactKeys.jpg" alt="&#39;keys&#39;"></p>
+<p>场景：</p>
+<ul>
+<li><p>假设有一个数组，包含五个数据，页面第一次渲染时，会把这五个数据映射成五个虚拟DOM节点，生成虚拟DOM树，如图左。</p>
+</li>
+<li><p>接着添加一个新的内容，数据发生变化，生成新的虚拟DOM树。</p>
+</li>
+<li><p>接着对前后2个虚拟DOM进行对比，如果每一个节点，都没有一个自己的key值，节点和节点之间的关系就很难被对应上，所以需要两层循环比较。</p>
+</li>
+</ul>
+<p>改善：</p>
+<ul>
+<li>如图右侧，给每个节点增加一个key，这样在比对的时候，就可以轻松发现一一对应的关系，只有<code>z</code>不同，这个时候，快速建立起关联后，只把<code>z</code>加进去即可。</li>
+</ul>
+<p>注：why no index as key in loop?</p>
+<ul>
+<li><p>若key值为index，在新的虚拟DOM树上，没办法保证前后key值一致。</p>
+<p>举例说明：再看一下<code>todolist</code> demo:</p>
+<ul>
+<li><p>a:0 b: 1 c: 2  -&gt; 删除a，重新渲染</p>
+</li>
+<li><p>b: 0 c: 1 -&gt; 前后index值不一样，故失去了快速比对的条件。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>写在最后：<br>Keys should be stable, predictable, and unique.Unstable keys (like those produced by Math.random() will cause many component instances and DOM nodes to be unnecessarily recreated, which can cause performance degradation and lost state in child components.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"> <i class="fa fa-tag"></i> JS</a>
+              <a href="/tags/React/" rel="tag"> <i class="fa fa-tag"></i> React</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/05/07/通过手写Redux, 了解实现原理/" rel="next" title="通过手写一个简单的Redux, 了解实现原理">
+                  <i class="fa fa-chevron-left"></i> 通过手写一个简单的Redux, 了解实现原理
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2020/09/21/如何高性能渲染长列表/" rel="prev" title="如何高性能渲染长列表?">
+                  如何高性能渲染长列表? <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是虚拟DOM"><span class="nav-number">1.</span> <span class="nav-text">什么是虚拟DOM?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深入了解虚拟DOM"><span class="nav-number">2.</span> <span class="nav-text">深入了解虚拟DOM:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-一段代码："><span class="nav-number">2.1.</span> <span class="nav-text">1. 一段代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-一些相关的思考："><span class="nav-number">2.2.</span> <span class="nav-text">2. 一些相关的思考：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟DOM中的diff算法"><span class="nav-number">3.</span> <span class="nav-text">虚拟DOM中的diff算法:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Leo Chen"
+    src="/img/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leo Chen</p>
+  <div class="site-description" itemprop="description">Not perfect, so need to learn.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leocs2417" title="GitHub &rarr; https://github.com/leocs2417" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn" rel="noopener" target="_blank">辽ICP备17015710号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Chen</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+<script src="/js/next-boot.js?v=7.4.2"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.2"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

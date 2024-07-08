@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 2px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true},
+    copycode: {"enable":true,"show_result":true,"style":"flat"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":"auto","trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="浏览器的工作原理及JS的运行机制。  大纲 浏览器是多进程的 梳理浏览器内核中线程之间的关系 浏览器渲染流程 从Event Loop谈JS的运行机制 事件循环进阶：macrotask与microtask 浏览器的安全  宏观视角下的浏览器Chrome架构：仅仅打开一个页面，为什么有多个进程？">
+<meta name="keywords" content="JS,浏览器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器的工作原理及JS的运行机制">
+<meta property="og:url" content="http://yoursite.com/2019/06/06/浏览器的工作原理及JS的运行机制/index.html">
+<meta property="og:site_name" content="Leo Chen&#39;s Blog">
+<meta property="og:description" content="浏览器的工作原理及JS的运行机制。  大纲 浏览器是多进程的 梳理浏览器内核中线程之间的关系 浏览器渲染流程 从Event Loop谈JS的运行机制 事件循环进阶：macrotask与microtask 浏览器的安全  宏观视角下的浏览器Chrome架构：仅仅打开一个页面，为什么有多个进程？">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/assets/image/process.png">
+<meta property="og:image" content="http://yoursite.com/assets/image/render-page.png">
+<meta property="og:image" content="http://yoursite.com/assets/image/browser-communication.png">
+<meta property="og:image" content="http://yoursite.com/assets/image/evt.png">
+<meta property="og:image" content="http://yoursite.com/assets/image/task.png">
+<meta property="og:updated_time" content="2024-07-08T11:21:57.816Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浏览器的工作原理及JS的运行机制">
+<meta name="twitter:description" content="浏览器的工作原理及JS的运行机制。  大纲 浏览器是多进程的 梳理浏览器内核中线程之间的关系 浏览器渲染流程 从Event Loop谈JS的运行机制 事件循环进阶：macrotask与microtask 浏览器的安全  宏观视角下的浏览器Chrome架构：仅仅打开一个页面，为什么有多个进程？">
+<meta name="twitter:image" content="http://yoursite.com/assets/image/process.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/06/06/浏览器的工作原理及JS的运行机制/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>浏览器的工作原理及JS的运行机制 | Leo Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leo Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">一叶浮萍归大海，人生何处不相逢。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/06/浏览器的工作原理及JS的运行机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpeg">
+      <meta itemprop="name" content="Leo Chen">
+      <meta itemprop="description" content="Not perfect, so need to learn.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leo Chen's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浏览器的工作原理及JS的运行机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>浏览器的工作原理及JS的运行机制。</p>
+</blockquote>
+<h2 id="大纲"><a href="#大纲" class="headerlink" title="大纲"></a>大纲</h2><ul>
+<li>浏览器是多进程的</li>
+<li>梳理浏览器内核中线程之间的关系</li>
+<li>浏览器渲染流程</li>
+<li>从Event Loop谈JS的运行机制</li>
+<li>事件循环进阶：macrotask与microtask</li>
+<li>浏览器的安全</li>
+</ul>
+<h2 id="宏观视角下的浏览器"><a href="#宏观视角下的浏览器" class="headerlink" title="宏观视角下的浏览器"></a>宏观视角下的浏览器</h2><h3 id="Chrome架构：仅仅打开一个页面，为什么有多个进程？"><a href="#Chrome架构：仅仅打开一个页面，为什么有多个进程？" class="headerlink" title="Chrome架构：仅仅打开一个页面，为什么有多个进程？"></a>Chrome架构：仅仅打开一个页面，为什么有多个进程？</h3><a id="more"></a>
+
+<p>现代浏览器使用的都是多进程架构，打开一个网页时最少有4个进程：</p>
+<ol>
+<li><p>Browser进程（主进程）：</p>
+<ul>
+<li>浏览器的界面显示，及用户交互（当前页面的前进后退）。</li>
+<li>其他页面的管理: 创建、销毁其他页面等。</li>
+<li>页面的Render渲染。</li>
+<li>网络资源的管理，下载等。</li>
+</ul>
+</li>
+<li><p>网络进程：</p>
+<ul>
+<li>主要负责页面的网络资源加载，之前是作为一个模块运行在浏览器进程里面的，直至最近才独立出来，成为一个单独的进程。</li>
+</ul>
+</li>
+<li><p>Renderer进程（渲染进程）：</p>
+<ul>
+<li>核心任务是将 HTML、CSS 和 JavaScript 转换为用户可以与之交互的网页，排版引擎 Blink 和 JavaScript 引擎 V8 都是运行在该进程中，默认情况下，Chrome 会为每个 Tab 标签创建一个Renderer进程。出于安全考虑，Renderer进程都是运行在沙箱模式下。</li>
+</ul>
+</li>
+<li><p>GPU进程：</p>
+<ul>
+<li>Chrome 刚开始发布的时候是没有GPU进程的。而GPU的使用初衷是为了实现 3D CSS 的效果，只是随后网页、Chrome 的 UI 界面都选择采用GPU来绘制，这使得GPU成为浏览器普遍的需求。最后，Chrome 在其多进程架构上也引入了GPU进程。</li>
+</ul>
+</li>
+<li><p>页面进程：</p>
+<ul>
+<li><p>每打开一个页面，都会开启一个进程。</p>
+<p>注：Chrome中，多个空的tab页会合并为一个进程。</p>
+</li>
+</ul>
+</li>
+<li><p>插件进程：</p>
+<ul>
+<li>每个浏览器插件都是一个进程，考虑到插件易崩溃，所以单独进程。</li>
+</ul>
+</li>
+</ol>
+<p>参考图：</p>
+<p><img src="/assets/image/process.png" alt></p>
+<h3 id="多进程的优势？"><a href="#多进程的优势？" class="headerlink" title="多进程的优势？"></a>多进程的优势？</h3><ul>
+<li><p>单个页面或第三方插件<strong>Crash</strong>，不会影响整个浏览器。</p>
+</li>
+<li><p>充分利用设备<strong>多核</strong>优势。</p>
+</li>
+<li><p>方便使用沙盒模型隔离插件等进程，提高稳定性。</p>
+</li>
+</ul>
+<h3 id="HTTP请求流程：为什么很多网站第二次打开会快很多？"><a href="#HTTP请求流程：为什么很多网站第二次打开会快很多？" class="headerlink" title="HTTP请求流程：为什么很多网站第二次打开会快很多？"></a>HTTP请求流程：为什么很多网站第二次打开会快很多？</h3><ul>
+<li>DNS缓存</li>
+<li>页面资源缓存</li>
+</ul>
+<p>详细供参考链接：<a href="https://zhuanlan.zhihu.com/p/38240894" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/38240894</a></p>
+<h3 id="导航流程：从输入URL到页面展示，中间发生了什么？"><a href="#导航流程：从输入URL到页面展示，中间发生了什么？" class="headerlink" title="导航流程：从输入URL到页面展示，中间发生了什么？"></a>导航流程：从输入URL到页面展示，中间发生了什么？</h3><p>简化版：</p>
+<ul>
+<li><p>浏览器根据DNS服务器得到域名的IP地址。</p>
+</li>
+<li><p>向该IP地址的服务器发起HTTP请求。</p>
+</li>
+<li><p>服务器收到、处理、并返回HTTP请求。</p>
+</li>
+<li><p>浏览器得到返回内容，渲染流程开始。</p>
+</li>
+</ul>
+<p>详细供参考链接：<a href="https://zhuanlan.zhihu.com/p/23155051" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/23155051</a></p>
+<h2 id="浏览器内核（即Renderer进程）-重点"><a href="#浏览器内核（即Renderer进程）-重点" class="headerlink" title="浏览器内核（即Renderer进程）- 重点"></a>浏览器内核（即Renderer进程）- 重点</h2><p>大多时候，对于前端开发来讲，最重要、最需要清楚的就是<strong>浏览器的渲染，即Renderer进程：</strong></p>
+<ul>
+<li><p>页面的渲染，JS的执行，以及事件的轮询。</p>
+</li>
+<li><p>浏览器Renderer进程，即Renderer进程是<strong>多线程的</strong>。</p>
+</li>
+</ul>
+<h3 id="主要包含哪些线程："><a href="#主要包含哪些线程：" class="headerlink" title="主要包含哪些线程："></a>主要包含哪些线程：</h3><ol>
+<li><p>GUI渲染线程</p>
+<ul>
+<li>负责浏览器的界面渲染。</li>
+</ul>
+</li>
+<li><p>JS引擎线程</p>
+<ul>
+<li><p>负责JavaScript脚本的处理和解析。（例如Chrome V8引擎）。</p>
+</li>
+<li><p>等待着任务队列中任务的到来，然后加以处理，一个Tab页只有一个JS线程。</p>
+</li>
+</ul>
+</li>
+<li><p>事件触发线程</p>
+<ul>
+<li><p>归属于浏览器而不是JS引擎，用来事件轮询。</p>
+</li>
+<li><p>当<strong>JS引擎</strong>执行代码块，例如<strong>用户点击</strong>，<strong>定时器</strong>，<strong>网络请求</strong>等异步Function。会将此任务添加到<strong>事件队列</strong>（即事件触发线程）中。</p>
+</li>
+<li><p>当对应的事件符合触发的条件，被触发时，事件线程会将其添加到事件队列的队尾，等待<strong>JS引擎</strong>的处理。</p>
+</li>
+</ul>
+</li>
+<li><p>定时器触发线程 <strong>setTimeout</strong>和<strong>setInterval</strong></p>
+<ul>
+<li><p>定时器不是由JS引擎计时的。因为JS引擎是单线程的，如果处于阻塞状态会影响计时的准确性。</p>
+</li>
+<li><p>为了保证计时的准确性，就单独起一个线程，来做计时，计时完毕后，排在事件队列中，等待JS引擎空闲后执行。</p>
+</li>
+</ul>
+</li>
+<li><p>HTTP网络请求线程</p>
+<ul>
+<li><p>在<strong>XMLHttpRequest</strong>，连接后，起一个新线程，触发请求。</p>
+</li>
+<li><p>将检测到状态变更时，如果设置有回调函数，异步线程就产生状态变更事件，将这个回调再放入事件队列中。再由JS引擎执行。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="HTML，CSS，JavaScript是如何变成页面的？"><a href="#HTML，CSS，JavaScript是如何变成页面的？" class="headerlink" title="HTML，CSS，JavaScript是如何变成页面的？"></a>HTML，CSS，JavaScript是如何变成页面的？</h3><ol>
+<li>根据HTML生成DOM Tree。</li>
+<li>根据CSS生成CSSOM。</li>
+<li>根据DOM Tree和CSSOM生成Render Tree。</li>
+<li>根据Render Tree开始渲染和展示。</li>
+<li>遇见<strong>&lt;script&gt;</strong>标签，执行，并阻塞渲染。（与JS引擎线程互斥）</li>
+</ol>
+<p>参考图：<img src="/assets/image/render-page.png" alt="Render process"></p>
+<h3 id="WebWorker（HTML5-API）（简略）"><a href="#WebWorker（HTML5-API）（简略）" class="headerlink" title="WebWorker（HTML5 API）（简略）"></a>WebWorker（HTML5 API）（简略）</h3><h4 id="应用场景："><a href="#应用场景：" class="headerlink" title="应用场景："></a>应用场景：</h4><ul>
+<li><p>比如页面中包含耗时较大的算法代码时，就会阻塞线程影响浏览器渲染等。这时候就可把比较耗时的代码，放到<strong>WebWorker</strong>(另一个线程)中执行。</p>
+</li>
+<li><p><strong>new Worker()</strong></p>
+</li>
+<li><p>流程：</p>
+<ul>
+<li><p>首先，JS引擎向浏览器申请开一个子线程创建worker线程（其本身不能操作DOM）</p>
+</li>
+<li><p>JS引擎线程与Worker线程间通过特定的方式通信（postMessage API，需要通过序列化对象来与线程交互特定的数据）</p>
+</li>
+<li><p>待计算出结果后，将结果通信给JS主线程。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>注：WebWorker是<strong>当前页面专有</strong>的。</p>
+<p>详细供参考链接：<a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers</a></p>
+<h3 id="SharedWorker（简略）"><a href="#SharedWorker（简略）" class="headerlink" title="SharedWorker（简略）"></a>SharedWorker（简略）</h3><h4 id="应用场景：-1"><a href="#应用场景：-1" class="headerlink" title="应用场景："></a>应用场景：</h4><ul>
+<li><p>多个标签页、iframe之间的通信。</p>
+</li>
+<li><p><strong>new SharedWorker(‘worker.js’)</strong></p>
+</li>
+<li><p>前提都是同源的(相同的协议，域名和端口)</p>
+</li>
+</ul>
+<p>注：SharedWorker是浏览器所有页面共享的，它不隶属于某个Renderer进程，可以为多个Renderer进程共享。</p>
+<p>详细供参考链接：<a href="https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker</a></p>
+<h2 id="Browser进程与Renderer进程的通信具体实例"><a href="#Browser进程与Renderer进程的通信具体实例" class="headerlink" title="Browser进程与Renderer进程的通信具体实例"></a>Browser进程与Renderer进程的通信具体实例</h2><ol>
+<li><p>当我们打开<strong>任务管理器</strong>后，新打开一个浏览器后，<strong>任务管理器</strong>中相应的增加了两个进程：</p>
+<ul>
+<li><p>主控进程</p>
+</li>
+<li><p>tab页面的Renderer进程</p>
+</li>
+</ul>
+</li>
+<li><p>tab页非空白页的前提下，整个主要的渲染过程如下：</p>
+<ul>
+<li><p>Browser进程收到请求，先要获取页面内容，然后将RendererHost接口传递给Renderer进程。</p>
+</li>
+<li><p>Renderer进程相应的接口收到消息，<strong>处理后，交给渲染线程</strong>，开始渲染：</p>
+</li>
+<li><p>渲染线程收到收到请求，加载并渲染网页，期间可能需要Browser进程和GPU进程帮助渲染。</p>
+</li>
+<li><p>期间，还可能会有JS线程进程DOM操作（操作可能会导致回流、重绘）。</p>
+</li>
+<li><p>最后，<strong>渲染结果</strong>将传给Browser进程。</p>
+</li>
+<li><p>Browser进程收到结果并将结果绘制出来。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>通信的过程参考图：<br><img src="/assets/image/browser-communication.png" alt="&#39;Browser communication&#39;"></p>
+<h2 id="V8工作原理（简略）"><a href="#V8工作原理（简略）" class="headerlink" title="V8工作原理（简略）"></a>V8工作原理（简略）</h2><h3 id="栈空间和堆空间：数据是如何存储的？"><a href="#栈空间和堆空间：数据是如何存储的？" class="headerlink" title="栈空间和堆空间：数据是如何存储的？"></a>栈空间和堆空间：数据是如何存储的？</h3><ul>
+<li><p>在JavaScript的执行过程中，主要有三种类型内存空间：代码空间、栈空间、堆空间。</p>
+</li>
+<li><p>原始类型的数据值都是直接保存在栈中的，引用类型的值都是保存在堆空间中的。</p>
+</li>
+<li><p>通常情况下，栈空间都不会设置太大，主要用来存放一些原始类型的小数据。堆空间很大，能存放很多大的数据。</p>
+</li>
+<li><p>原始类型的赋值会完整复制变量值，而引用类型的赋值是复制引用地址。</p>
+</li>
+</ul>
+<h3 id="垃圾回收：垃圾数据是如何自动回收的？"><a href="#垃圾回收：垃圾数据是如何自动回收的？" class="headerlink" title="垃圾回收：垃圾数据是如何自动回收的？"></a>垃圾回收：垃圾数据是如何自动回收的？</h3><p>对一些不需要的数据，我们称之为垃圾数据，由于内存是有限的，为了释放内存，我们需要对这么垃圾数据进行回收：</p>
+<p>详细供参考链接：<a href="https://zhuanlan.zhihu.com/p/23992332" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/23992332</a></p>
+<h3 id="编译器和解释器：V8中是如何执行一段JS代码的？"><a href="#编译器和解释器：V8中是如何执行一段JS代码的？" class="headerlink" title="编译器和解释器：V8中是如何执行一段JS代码的？"></a>编译器和解释器：V8中是如何执行一段JS代码的？</h3><p>详细供参考链接：<a href="https://juejin.im/post/5dc4d823f265da4d4c202d3b" target="_blank" rel="noopener">https://juejin.im/post/5dc4d823f265da4d4c202d3b</a></p>
+<h2 id="浏览器中的JS运行机制-重点"><a href="#浏览器中的JS运行机制-重点" class="headerlink" title="浏览器中的JS运行机制 - 重点"></a>浏览器中的JS运行机制 - 重点</h2><p>当页面渲染首次完毕之后，就到了JS引擎线程运行的机制分析：</p>
+<p>这里主要从EventLoop来说一下JS的执行。</p>
+<h3 id="几个概念："><a href="#几个概念：" class="headerlink" title="几个概念："></a>几个概念：</h3><ul>
+<li><p>JS分同步任务和异步任务。</p>
+</li>
+<li><p>同步任务在<strong>主线程</strong>上执行，会形成一个<strong>执行栈</strong>。</p>
+</li>
+<li><p>另外，还有一个<strong>事件触发线程</strong>，负责<strong>任务队列</strong>，只要异步任务有了运行结果，就在任务队列中添加一个事件。</p>
+</li>
+<li><p>一旦<strong>执行栈</strong>中的同步任务全部执行完毕，即此时JS引擎线程空闲，就会开始读取任务队列，将可运行的异步任务加到执行栈中，开始执行。</p>
+</li>
+</ul>
+<p>流程如图：<br>    <img src="/assets/image/evt.png" alt="&#39;Event process img&#39;"></p>
+<h3 id="定时器："><a href="#定时器：" class="headerlink" title="定时器："></a>定时器：</h3><p>上边的EventLoop机制的核心就是：<strong>JS引擎线程</strong>和<strong>事件触发线程</strong>。</p>
+<ul>
+<li>在浏览器中，定时器不是JS引擎线程来控制的，而是由浏览器单独起一个定时器线程来计时的。</li>
+</ul>
+<p><strong>单独起定时器线程的原因：</strong></p>
+<ul>
+<li>因为JavaScript引擎是单线程的，一旦其正处于阻塞状态，会影响计时的准确性，所以浏览器单独起一个线程来做计时。</li>
+</ul>
+<p><strong>什么时候会用到定时器线程：</strong></p>
+<ul>
+<li>当使用<strong>setTimeout</strong>或<strong>setInterval</strong>的时候，需要用到定时器线程计时，待计时完成后，将相应事件推入事件队列中，排队等待<strong>主线程</strong>执行。</li>
+</ul>
+<p>eg. </p>
+<pre><code>setTimeout(() =&gt; {
+    console.log(&apos;hello!&apos;);
+}, 0);
+
+console.log(&apos;begin&apos;);</code></pre><p><strong>注：</strong></p>
+<p>执行结果：先begin，后hello。</p>
+<p>虽然本身是0ms，随即推入事件队列，但在W3C标准中，低于4ms的间隔，按4ms算。</p>
+<p><strong>setTimeout代替setInterval：</strong></p>
+<p>用setTimeout模拟setInterval，和直接使用setInterval是有区别的，原因：</p>
+<ul>
+<li><p>setTimeout会在每次计时完毕后，就会去执行(有一定误差)，执行一段时间后才会继续setTimeout。</p>
+</li>
+<li><p>而setInterval每次都精确的隔一段时间推入一个事件。但是，事件的实际执行时间不一定就准确，还有可能是这个事件还没执行完毕，下一个事件就来了，这样就会导致累积效应。导致定时器<strong>连续运行多次</strong>，而中间<strong>没有时间间隔</strong>。</p>
+</li>
+</ul>
+<p>注：有时候<strong>setTimeout</strong>不能准确按照制定的延时时间执行，就是因为可能在它排在任务队列中时，主线程不是空闲状态，正在执行其它任务，所以会造成误差。</p>
+<h3 id="macrotask与microtask："><a href="#macrotask与microtask：" class="headerlink" title="macrotask与microtask："></a><strong>macrotask与microtask：</strong></h3><h4 id="JS任务类型分两种：macrotask-宏任务-与microtask-微任务"><a href="#JS任务类型分两种：macrotask-宏任务-与microtask-微任务" class="headerlink" title="JS任务类型分两种：macrotask(宏任务)与microtask(微任务)"></a>JS任务类型分两种：<strong>macrotask(宏任务)与microtask(微任务)</strong></h4><ol>
+<li><p>macrotask - task:</p>
+<ul>
+<li><p>每次执行栈执行的代码就是一个宏任务，包括每次从事件队列中获取一个事件回调并放到执行栈中执行。</p>
+</li>
+<li><p>每个task直到执行完毕，期间不会执行其他任务。</p>
+</li>
+<li><p>浏览器为了能够使得JS内部task与DOM任务能够有序的执行，会在一个task执行结束后，在下一个 task 执行开始前，对页面进行重新渲染 （task-&gt;渲染-&gt;task-&gt;…）</p>
+</li>
+</ul>
+</li>
+<li><p>microtask - jobs:</p>
+<ul>
+<li><p>在当前<strong>task</strong>执行完毕后，立即执行（在当前task任务后，下一个task之前，在渲染之前）。</p>
+</li>
+<li><p>所以它的响应速度相比setTimeout（setTimeout是task）会更快，因为无需等渲染。</p>
+</li>
+<li><p>在某一个macrotask执行完后，就会将在它执行期间产生的所有microtask都执行完毕（在渲染前）。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>注：</strong></p>
+<ul>
+<li><p>宏任务微任务，简单来说，都是异步代码，一般情况下，一个宏任务内部总是先<strong>按顺序执行同步代码</strong>，之后再执行该宏任务中的微任务，等到都执行完毕，再进入下一个宏任务。</p>
+</li>
+<li><p><strong>macrotask（宏任务）：</strong>script标签包含的code、<strong>setTimeout</strong>、<strong>setInterval</strong>、<strong>setImmediately</strong>、<strong>I/O</strong>等。（可以看到，事件队列中的每一个事件都是一个macrotask）</p>
+</li>
+<li><p><strong>microtask（微任务）：</strong> <strong>MutationObserver</strong>，<strong>Promise</strong>，<strong>process.nextTick</strong>等<br>(浏览器中的优先级：process.nextTick &gt; Promise &gt; MutationObserver)。</p>
+</li>
+</ul>
+<p>总结：</p>
+<ul>
+<li><p>所有宏任务都是放在一个事件队列中的，而这个队列由事件触发线程维护。</p>
+</li>
+<li><p>所有微任务都是添加到微任务队列（Job Queues）中，等待当前macrotask执行完毕后执行。</p>
+</li>
+</ul>
+<p>如图：</p>
+<p><img src="/assets/image/task.png" alt="&#39;task img&#39;"></p>
+<p>一段代码：</p>
+<pre><code>async function async1() {
+    console.log(1)
+    const result = await async2();
+    console.log(3)
+}
+
+async function async2() {
+    console.log(2);
+}
+
+Promise.resolve().then(() =&gt; {
+    console.log(4)
+})
+
+setTimeout(() =&gt; {
+    console.log(5)
+}, 0)
+
+async1();
+console.log(6);</code></pre><h2 id="浏览器安全（简略）"><a href="#浏览器安全（简略）" class="headerlink" title="浏览器安全（简略）"></a>浏览器安全（简略）</h2><ul>
+<li><p>同源策略：为什么XMLHttpRequest不能跨域请求资源？</p>
+<ul>
+<li>同源策略会隔离不同源的 DOM、页面数据和网络通信，进而实现Web页面的安全性</li>
+</ul>
+</li>
+<li><p>跨域通信：</p>
+<ol>
+<li><p>通过jsonp跨域</p>
+</li>
+<li><p>document.domain + iframe跨域</p>
+</li>
+<li><p>location.hash + iframe</p>
+</li>
+<li><p>window.name + iframe跨域</p>
+</li>
+<li><p>PostMessage跨域</p>
+</li>
+<li><p>跨域资源共享（CORS）</p>
+</li>
+<li><p>Nginx代理跨域</p>
+</li>
+<li><p>Nodejs中间件代理跨域</p>
+</li>
+<li><p>WebSocket协议跨域</p>
+<p>详细供参考链接：<a href="https://juejin.im/post/5c23993de51d457b8c1f4ee1" target="_blank" rel="noopener">https://juejin.im/post/5c23993de51d457b8c1f4ee1</a></p>
+</li>
+</ol>
+</li>
+<li><p>网络攻击：</p>
+<ul>
+<li><p>XSS(Cross Site Scripting - 跨站脚本攻击)：</p>
+<ul>
+<li><p>场景实例：</p>
+<ul>
+<li><p>在新浪博客写了一篇文章，同时偷偷插入一段<strong>&lt;script&gt;</strong></p>
+</li>
+<li><p>在攻击代码中，获取cookie，发送到自己的服务器。</p>
+</li>
+<li><p>发布博客，有人查看博客内容。</p>
+</li>
+<li><p>则查看者的cookie发送到攻击者的服务器。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>CSRF(Cross-site request forgery - 跨站请求伪造)：</p>
+<ul>
+<li><p>场景实例：</p>
+<ul>
+<li><p>你已登录一个购物网站。</p>
+</li>
+<li><p>该网站的付费接口是xxx.com/pay?id=250，但没有验证。</p>
+</li>
+<li><p>然后你收到一封邮件，隐藏着&lt;img src=xxx.com/pay?id=250&gt;</p>
+</li>
+<li><p>查看邮件的时候，就已经悄悄购买了。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如何避免：</p>
+<ul>
+<li><p>XSS：</p>
+<ol>
+<li><p>HttpOnly 防止劫取 Cookie</p>
+</li>
+<li><p>不要相信用户的任何输入。</p>
+</li>
+<li><p>Server端做输出检查。</p>
+</li>
+</ol>
+</li>
+<li><p>CSRF：</p>
+<ol>
+<li><p>增加指纹，密码，短信验证码等。</p>
+</li>
+<li><p>增加Token验证。</p>
+</li>
+</ol>
+</li>
+<li><p>HTTPS - 让数据传输更安全。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>详细供参考链接：<a href="https://juejin.im/entry/5b4b56fd5188251b1a7b2ac1" target="_blank" rel="noopener">https://juejin.im/entry/5b4b56fd5188251b1a7b2ac1</a></p>
+<p>本文其他参考链接：</p>
+<p><a href="https://time.geekbang.org/column/intro/216" target="_blank" rel="noopener">https://time.geekbang.org/column/intro/216</a><br><a href="https://juejin.im/post/5a6547d0f265da3e283a1df7" target="_blank" rel="noopener">https://juejin.im/post/5a6547d0f265da3e283a1df7</a><br><a href="https://juejin.im/post/5dc12da8f265da4cfb512db0" target="_blank" rel="noopener">https://juejin.im/post/5dc12da8f265da4cfb512db0</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"> <i class="fa fa-tag"></i> JS</a>
+              <a href="/tags/浏览器/" rel="tag"> <i class="fa fa-tag"></i> 浏览器</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/03/21/Vue中，计算属性vs方法vs侦听属性/" rel="next" title="Vue中，计算属性vs方法vs侦听属性">
+                  <i class="fa fa-chevron-left"></i> Vue中，计算属性vs方法vs侦听属性
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/06/13/Vue中，v-if和v-show的区别/" rel="prev" title="Vue中，v-if和v-show的区别.md">
+                  Vue中，v-if和v-show的区别.md <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#大纲"><span class="nav-number">1.</span> <span class="nav-text">大纲</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#宏观视角下的浏览器"><span class="nav-number">2.</span> <span class="nav-text">宏观视角下的浏览器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chrome架构：仅仅打开一个页面，为什么有多个进程？"><span class="nav-number">2.1.</span> <span class="nav-text">Chrome架构：仅仅打开一个页面，为什么有多个进程？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多进程的优势？"><span class="nav-number">2.2.</span> <span class="nav-text">多进程的优势？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP请求流程：为什么很多网站第二次打开会快很多？"><span class="nav-number">2.3.</span> <span class="nav-text">HTTP请求流程：为什么很多网站第二次打开会快很多？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导航流程：从输入URL到页面展示，中间发生了什么？"><span class="nav-number">2.4.</span> <span class="nav-text">导航流程：从输入URL到页面展示，中间发生了什么？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器内核（即Renderer进程）-重点"><span class="nav-number">3.</span> <span class="nav-text">浏览器内核（即Renderer进程）- 重点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要包含哪些线程："><span class="nav-number">3.1.</span> <span class="nav-text">主要包含哪些线程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML，CSS，JavaScript是如何变成页面的？"><span class="nav-number">3.2.</span> <span class="nav-text">HTML，CSS，JavaScript是如何变成页面的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebWorker（HTML5-API）（简略）"><span class="nav-number">3.3.</span> <span class="nav-text">WebWorker（HTML5 API）（简略）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用场景："><span class="nav-number">3.3.1.</span> <span class="nav-text">应用场景：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SharedWorker（简略）"><span class="nav-number">3.4.</span> <span class="nav-text">SharedWorker（简略）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用场景：-1"><span class="nav-number">3.4.1.</span> <span class="nav-text">应用场景：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Browser进程与Renderer进程的通信具体实例"><span class="nav-number">4.</span> <span class="nav-text">Browser进程与Renderer进程的通信具体实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#V8工作原理（简略）"><span class="nav-number">5.</span> <span class="nav-text">V8工作原理（简略）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#栈空间和堆空间：数据是如何存储的？"><span class="nav-number">5.1.</span> <span class="nav-text">栈空间和堆空间：数据是如何存储的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾回收：垃圾数据是如何自动回收的？"><span class="nav-number">5.2.</span> <span class="nav-text">垃圾回收：垃圾数据是如何自动回收的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和解释器：V8中是如何执行一段JS代码的？"><span class="nav-number">5.3.</span> <span class="nav-text">编译器和解释器：V8中是如何执行一段JS代码的？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器中的JS运行机制-重点"><span class="nav-number">6.</span> <span class="nav-text">浏览器中的JS运行机制 - 重点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#几个概念："><span class="nav-number">6.1.</span> <span class="nav-text">几个概念：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定时器："><span class="nav-number">6.2.</span> <span class="nav-text">定时器：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#macrotask与microtask："><span class="nav-number">6.3.</span> <span class="nav-text">macrotask与microtask：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JS任务类型分两种：macrotask-宏任务-与microtask-微任务"><span class="nav-number">6.3.1.</span> <span class="nav-text">JS任务类型分两种：macrotask(宏任务)与microtask(微任务)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器安全（简略）"><span class="nav-number">7.</span> <span class="nav-text">浏览器安全（简略）</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Leo Chen"
+    src="/img/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leo Chen</p>
+  <div class="site-description" itemprop="description">Not perfect, so need to learn.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leocs2417" title="GitHub &rarr; https://github.com/leocs2417" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn" rel="noopener" target="_blank">辽ICP备17015710号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Chen</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+<script src="/js/next-boot.js?v=7.4.2"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.2"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

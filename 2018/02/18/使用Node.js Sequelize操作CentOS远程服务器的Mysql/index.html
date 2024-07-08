@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 2px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true},
+    copycode: {"enable":true,"show_result":true,"style":"flat"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":"auto","trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="前端有时候也需要自己写后端以及数据库的代码，可能会使用Node.js作为服务端代码，并与数据库连接进行数据交互。  其中，操作数据库部分，这里使用的mysql：这里可以直接使用mysql包提供的接口，缺点是编写的代码比较底层，而且在代码中使用SQL语句安全性较差。 这里使用的方法是sequelize操作数据库。（学名为Node.JS的ORM框架，即把关系数据库的表结构映射到对象上） 使用该框架，">
+<meta name="keywords" content="Node.js,Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Node.js Sequelize操作CentOS远程服务器的Mysql">
+<meta property="og:url" content="http://yoursite.com/2018/02/18/使用Node.js Sequelize操作CentOS远程服务器的Mysql/index.html">
+<meta property="og:site_name" content="Leo Chen&#39;s Blog">
+<meta property="og:description" content="前端有时候也需要自己写后端以及数据库的代码，可能会使用Node.js作为服务端代码，并与数据库连接进行数据交互。  其中，操作数据库部分，这里使用的mysql：这里可以直接使用mysql包提供的接口，缺点是编写的代码比较底层，而且在代码中使用SQL语句安全性较差。 这里使用的方法是sequelize操作数据库。（学名为Node.JS的ORM框架，即把关系数据库的表结构映射到对象上） 使用该框架，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-07-08T11:21:57.816Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Node.js Sequelize操作CentOS远程服务器的Mysql">
+<meta name="twitter:description" content="前端有时候也需要自己写后端以及数据库的代码，可能会使用Node.js作为服务端代码，并与数据库连接进行数据交互。  其中，操作数据库部分，这里使用的mysql：这里可以直接使用mysql包提供的接口，缺点是编写的代码比较底层，而且在代码中使用SQL语句安全性较差。 这里使用的方法是sequelize操作数据库。（学名为Node.JS的ORM框架，即把关系数据库的表结构映射到对象上） 使用该框架，">
+
+<link rel="canonical" href="http://yoursite.com/2018/02/18/使用Node.js Sequelize操作CentOS远程服务器的Mysql/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>使用Node.js Sequelize操作CentOS远程服务器的Mysql | Leo Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leo Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">一叶浮萍归大海，人生何处不相逢。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/18/使用Node.js Sequelize操作CentOS远程服务器的Mysql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpeg">
+      <meta itemprop="name" content="Leo Chen">
+      <meta itemprop="description" content="Not perfect, so need to learn.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leo Chen's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用Node.js Sequelize操作CentOS远程服务器的Mysql
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Node-js/" itemprop="url" rel="index">
+                    <span itemprop="name">Node.js</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>前端有时候也需要自己写后端以及数据库的代码，可能会使用Node.js作为服务端代码，并与数据库连接进行数据交互。</p>
+</blockquote>
+<p>其中，操作数据库部分，这里使用的<strong>mysql</strong>：这里可以直接使用mysql包提供的接口，缺点是编写的代码比较底层，而且在代码中使用<strong>SQL语句</strong>安全性较差。</p>
+<h4 id="这里使用的方法是sequelize操作数据库。"><a href="#这里使用的方法是sequelize操作数据库。" class="headerlink" title="这里使用的方法是sequelize操作数据库。"></a>这里使用的方法是<strong>sequelize</strong>操作数据库。</h4><p>（学名为Node.JS的ORM框架，即把关系数据库的表结构映射到对象上）</p>
+<h4 id="使用该框架，增删改查的都是JavaScript对象。"><a href="#使用该框架，增删改查的都是JavaScript对象。" class="headerlink" title="使用该框架，增删改查的都是JavaScript对象。"></a>使用该框架，增删改查的都是JavaScript对象。</h4><p>本文为使用Sequelize连接服务器上的Mysql。特此记录，仅供参考：</p>
+<a id="more"></a>
+
+<p><strong>步骤如下：</strong></p>
+<ol>
+<li>安装依赖</li>
+</ol>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打开终端进入项目的根目录</span></span><br><span class="line">npm install sequelize</span><br><span class="line"></span><br><span class="line"><span class="comment">// sequelize操作依赖于mysql2</span></span><br><span class="line">npm install mysql2</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>连接数据库</li>
+</ol>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">var</span> Sequelize = <span class="keyword">require</span>(<span class="string">'sequelize'</span>);</span><br><span class="line"><span class="comment">// 数据库名, mysql的用户名, 密码</span></span><br><span class="line"><span class="built_in">var</span> sequelize = <span class="literal">new</span> Sequelize(db_name, user_name, password, &#123;</span><br><span class="line">	host: IP, <span class="comment">// 服务端地址，默认localhost</span></span><br><span class="line">	port:<span class="string">'3306'</span>,</span><br><span class="line">  	dialect: <span class="string">'mysql'</span>,</span><br><span class="line">  	pool: &#123;   <span class="comment">//连接池设置</span></span><br><span class="line">	    <span class="keyword">max</span>: <span class="number">5</span>, <span class="comment">//最大连接数</span></span><br><span class="line">	    <span class="keyword">min</span>: <span class="number">0</span>, <span class="comment">//最小连接数</span></span><br><span class="line">	    idle: <span class="number">10000</span></span><br><span class="line">	&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>测试连接</li>
+</ol>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sequelize.authenticate().<span class="keyword">then</span>(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"数据库连接成功"</span>);</span><br><span class="line">&#125;).<span class="keyword">catch</span>(<span class="function"><span class="params">(err)</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="regexp">//</span>数据库连接失败时打印输出</span><br><span class="line">    <span class="built_in">console</span>.error(err);</span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>定义模型test，告诉Sequelize如何映射数据库表：</li>
+</ol>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const test = sequelize.<span class="class"><span class="keyword">define</span></span>(<span class="string">'test'</span>, &#123;</span><br><span class="line">    id: &#123;</span><br><span class="line">        <span class="keyword">type</span>: Sequelize.<span class="built_in">STRING</span>(<span class="number">50</span>),</span><br><span class="line">        primaryKey: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    usr: Sequelize.<span class="built_in">STRING</span>(<span class="number">100</span>),</span><br><span class="line">    name: Sequelize.<span class="built_in">STRING</span>(<span class="number">100</span>),</span><br><span class="line">    updateTime: Sequelize.<span class="built_in">DATE</span></span><br><span class="line">&#125;, &#123;</span><br><span class="line">    timestamps: <span class="literal">false</span> <span class="comment">// 关闭Sequelize的自动添加时间戳的功能</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>写数据</li>
+</ol>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 主键必须有值</span></span><br><span class="line">test.create(&#123;</span><br><span class="line">    'id': 'testId',</span><br><span class="line">    'usr': 'testUsr',</span><br><span class="line">    'name': 'testName'</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>删数据</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">notes</span><span class="selector-class">.destroy</span>(&#123;</span><br><span class="line"> 	<span class="attribute">where</span>: &#123;</span><br><span class="line"> 		<span class="string">'id'</span>: <span class="string">'123'</span></span><br><span class="line"> 	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>改数据</li>
+</ol>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">//</span> ES6</span><br><span class="line">test.update(&#123;<span class="string">'name'</span>: <span class="string">'newName'</span>&#125;,</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">'where'</span>: &#123;</span><br><span class="line">        <span class="string">'id'</span>: <span class="string">'testId'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;).<span class="keyword">then</span>(<span class="function"><span class="params">(res)</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;).<span class="keyword">catch</span>((err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li>查数据</li>
+</ol>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES7</span></span><br><span class="line">(<span class="keyword">async</span> ()=&gt; &#123;</span><br><span class="line">	<span class="keyword">const</span> res = <span class="keyword">await</span> test.find(&#123;</span><br><span class="line">        attributes: [<span class="string">'name'</span>, <span class="string">'usr'</span>],</span><br><span class="line">        <span class="keyword">where</span>: &#123;</span><br><span class="line">            <span class="string">'id'</span>: <span class="string">'123'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        timestamps: <span class="literal">false</span></span><br><span class="line">    &#125;)</span><br><span class="line">	console.log(res);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<p><strong>注：sequelize数据类型表传送门：<a href="https://blog.csdn.net/zdluoa/article/details/81194215" target="_blank" rel="noopener">https://blog.csdn.net/zdluoa/article/details/81194215</a></strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Node-js/" rel="tag"> <i class="fa fa-tag"></i> Node.js</a>
+              <a href="/tags/Mysql/" rel="tag"> <i class="fa fa-tag"></i> Mysql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2018/03/18/SSH设置无密码和使用别名登录Linux服务器/" rel="prev" title="SSH设置无密码和使用别名登录Linux服务器">
+                  SSH设置无密码和使用别名登录Linux服务器 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#这里使用的方法是sequelize操作数据库。"><span class="nav-number">1.</span> <span class="nav-text">这里使用的方法是sequelize操作数据库。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用该框架，增删改查的都是JavaScript对象。"><span class="nav-number">2.</span> <span class="nav-text">使用该框架，增删改查的都是JavaScript对象。</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Leo Chen"
+    src="/img/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leo Chen</p>
+  <div class="site-description" itemprop="description">Not perfect, so need to learn.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leocs2417" title="GitHub &rarr; https://github.com/leocs2417" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn" rel="noopener" target="_blank">辽ICP备17015710号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Chen</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+<script src="/js/next-boot.js?v=7.4.2"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.2"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

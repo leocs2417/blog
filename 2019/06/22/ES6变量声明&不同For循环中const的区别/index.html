@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 2px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true},
+    copycode: {"enable":true,"show_result":true,"style":"flat"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":"auto","trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近写代码，在调ESLint时，发现const在for…in循环中，和普通for循环中，有一些不同。  变量声明 在传统的JavaScript中（非ES6），我们使用的是var关键字来做变量声明。不过其定义的变量存在：没有块级作用域，存在变量提升，可重复声明，全局变量会自动添加全局window对象下，提前装载等不足。  因此在ES6中，提供了两个新的声明变量的关键字：let和const，三者之间">
+<meta name="keywords" content="JS,ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为什么const在&#39;for...in&#39;循环中起作用，而普通&#39;for&#39;循环中不起作用。">
+<meta property="og:url" content="http://yoursite.com/2019/06/22/ES6变量声明&不同For循环中const的区别/index.html">
+<meta property="og:site_name" content="Leo Chen&#39;s Blog">
+<meta property="og:description" content="最近写代码，在调ESLint时，发现const在for…in循环中，和普通for循环中，有一些不同。  变量声明 在传统的JavaScript中（非ES6），我们使用的是var关键字来做变量声明。不过其定义的变量存在：没有块级作用域，存在变量提升，可重复声明，全局变量会自动添加全局window对象下，提前装载等不足。  因此在ES6中，提供了两个新的声明变量的关键字：let和const，三者之间">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/assets/image/varLoop.jpg">
+<meta property="og:image" content="http://yoursite.com/assets/image/letLoop.jpg">
+<meta property="og:image" content="http://yoursite.com/assets/image/constLoop.jpg">
+<meta property="og:image" content="http://yoursite.com/assets/image/constInLoop.jpg">
+<meta property="og:image" content="http://yoursite.com/assets/image/letInLoop.jpg">
+<meta property="og:updated_time" content="2024-07-08T11:21:57.815Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为什么const在&#39;for...in&#39;循环中起作用，而普通&#39;for&#39;循环中不起作用。">
+<meta name="twitter:description" content="最近写代码，在调ESLint时，发现const在for…in循环中，和普通for循环中，有一些不同。  变量声明 在传统的JavaScript中（非ES6），我们使用的是var关键字来做变量声明。不过其定义的变量存在：没有块级作用域，存在变量提升，可重复声明，全局变量会自动添加全局window对象下，提前装载等不足。  因此在ES6中，提供了两个新的声明变量的关键字：let和const，三者之间">
+<meta name="twitter:image" content="http://yoursite.com/assets/image/varLoop.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/06/22/ES6变量声明&不同For循环中const的区别/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>为什么const在'for...in'循环中起作用，而普通'for'循环中不起作用。 | Leo Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leo Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">一叶浮萍归大海，人生何处不相逢。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/22/ES6变量声明&不同For循环中const的区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpeg">
+      <meta itemprop="name" content="Leo Chen">
+      <meta itemprop="description" content="Not perfect, so need to learn.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leo Chen's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          为什么const在'for...in'循环中起作用，而普通'for'循环中不起作用。
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>最近写代码，在调ESLint时，发现<strong>const</strong>在for…in循环中，和普通for循环中，有一些不同。</p>
+</blockquote>
+<h2 id="变量声明"><a href="#变量声明" class="headerlink" title="变量声明"></a>变量声明</h2><ul>
+<li><p>在传统的<strong>JavaScript</strong>中（非ES6），我们使用的是<strong>var</strong>关键字来做变量声明。不过其定义的变量存在：<strong>没有块级作用域</strong>，<strong>存在变量提升</strong>，<strong>可重复声明</strong>，<strong>全局变量会自动添加全局window对象下</strong>，<strong>提前装载</strong>等不足。</p>
+</li>
+<li><p>因此在ES6中，提供了两个新的声明变量的关键字：<strong>let</strong>和<strong>const</strong>，三者之间，存在着一些不同。</p>
+</li>
+<li><p>这里先通过对比三者的一些区别，来开始这个主题。</p>
+</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><ul>
+<li>let使用场景：变量，替代var</li>
+<li>const使用场景：常量、声明匿名函数和箭头函数时。</li>
+</ul>
+<h3 id="const命令"><a href="#const命令" class="headerlink" title="const命令"></a>const命令</h3><ul>
+<li>let可以先声明变量，稍后赋值。const声明后必须马上赋值，否则会报错。</li>
+<li>const 简单类型的常量，一旦声明不可更改。复杂类型（对象，数组等）等指向指针的地址不能更改，内部数据可以改。</li>
+</ul>
+<h2 id="普通for循环中，var的行为："><a href="#普通for循环中，var的行为：" class="headerlink" title="普通for循环中，var的行为："></a>普通for循环中，var的行为：</h2><p><img src="/assets/image/varLoop.jpg" alt="&#39;var loop&#39;"></p>
+<ul>
+<li>从上图可以看到，<strong>var</strong>声明的变量循环，变量<strong>i</strong>在循环体的外部，依然能访问的到。</li>
+<li>在大多数时候，我们希望把<strong>i</strong>变量限制在<strong>{}</strong>的局部作用域中。而不是全局的window中。</li>
+</ul>
+<h2 id="普通for循环中，let的行为："><a href="#普通for循环中，let的行为：" class="headerlink" title="普通for循环中，let的行为："></a>普通for循环中，let的行为：</h2><p><img src="/assets/image/letLoop.jpg" alt="&#39;let loop&#39;"></p>
+<ul>
+<li>从上图可以看到，<strong>let</strong>声明的变量循环，变量<strong>j</strong>在循环体的外部，访问会报错，变量<strong>j</strong>被限制在块级作用域内。</li>
+<li>这样意味着，只能在其声明的<strong>块{}</strong>内部访问到。</li>
+</ul>
+<h2 id="普通for循环中，const的行为："><a href="#普通for循环中，const的行为：" class="headerlink" title="普通for循环中，const的行为："></a>普通for循环中，const的行为：</h2><ul>
+<li>在上面已经说明了const的特殊之处，它定义的变量是不能重新分配或重新声明的常量。</li>
+<li>由于这个原因，它是所有3个声明语句中<strong>最安全</strong>的选择。</li>
+<li>下图为const声明变量的for循环。</li>
+</ul>
+<p><img src="/assets/image/constLoop.jpg" alt="&#39;const loop&#39;"></p>
+<ul>
+<li>它只执行了一次循环，随即出现了报错。</li>
+<li>在传统的for循环中，迭代器只在操作开始时声明一次，所以这里是使用let的好地方!</li>
+</ul>
+<h2 id="ESLint报错-for…of-or-for…in-循环中推荐使用const声明变量"><a href="#ESLint报错-for…of-or-for…in-循环中推荐使用const声明变量" class="headerlink" title="ESLint报错 for…of or for…in 循环中推荐使用const声明变量"></a>ESLint报错 <strong>for…of</strong> or <strong>for…in</strong> 循环中推荐使用const声明变量</h2><h3 id="for…in"><a href="#for…in" class="headerlink" title="for…in"></a>for…in</h3><p><img src="/assets/image/constInLoop.jpg" alt="&#39;const in loop&#39;"></p>
+<ul>
+<li>如上图，使用<strong>for…in</strong>的方式循环使用<strong>const</strong>声明变量是可以的！</li>
+<li>在深入检查这些<strong>for…in</strong>循环类型之后，似乎它们在每次循环中都创建了一个新的块范围。这将意味着每个新索引实际上是一个新范围内的新变量，这样我们的<strong>常量</strong>永远不会被重新分配。</li>
+</ul>
+<h3 id="for…in-let"><a href="#for…in-let" class="headerlink" title="for…in (let)"></a>for…in (let)</h3><p><img src="/assets/image/letInLoop.jpg" alt="&#39;let in loop&#39;"></p>
+<ul>
+<li>如上图，虽然迭代器每次在循环结束时乘以2，但是在下一次执行时，打印的索引只是我们循环遍历的数组中的下一个连续索引。但是在索引轮询结束后，函数块返回6(最后一个索引3乘以2)。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"> <i class="fa fa-tag"></i> JS</a>
+              <a href="/tags/ES6/" rel="tag"> <i class="fa fa-tag"></i> ES6</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/06/13/Vue中，v-if和v-show的区别/" rel="next" title="Vue中，v-if和v-show的区别.md">
+                  <i class="fa fa-chevron-left"></i> Vue中，v-if和v-show的区别.md
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/08/31/exports和module.exports的区别/" rel="prev" title="exports和module.exports的区别">
+                  exports和module.exports的区别 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#变量声明"><span class="nav-number">1.</span> <span class="nav-text">变量声明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用场景"><span class="nav-number">1.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const命令"><span class="nav-number">1.2.</span> <span class="nav-text">const命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#普通for循环中，var的行为："><span class="nav-number">2.</span> <span class="nav-text">普通for循环中，var的行为：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#普通for循环中，let的行为："><span class="nav-number">3.</span> <span class="nav-text">普通for循环中，let的行为：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#普通for循环中，const的行为："><span class="nav-number">4.</span> <span class="nav-text">普通for循环中，const的行为：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ESLint报错-for…of-or-for…in-循环中推荐使用const声明变量"><span class="nav-number">5.</span> <span class="nav-text">ESLint报错 for…of or for…in 循环中推荐使用const声明变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#for…in"><span class="nav-number">5.1.</span> <span class="nav-text">for…in</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for…in-let"><span class="nav-number">5.2.</span> <span class="nav-text">for…in (let)</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Leo Chen"
+    src="/img/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leo Chen</p>
+  <div class="site-description" itemprop="description">Not perfect, so need to learn.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leocs2417" title="GitHub &rarr; https://github.com/leocs2417" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn" rel="noopener" target="_blank">辽ICP备17015710号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Chen</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+<script src="/js/next-boot.js?v=7.4.2"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.2"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

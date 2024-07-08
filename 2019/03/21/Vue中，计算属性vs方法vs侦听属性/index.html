@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 2px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true},
+    copycode: {"enable":true,"show_result":true,"style":"flat"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":"auto","trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="template 中，内嵌的表达式，可以添加简单的运算，以便动态绑定显示一些值。  计算属性：当 Vue.js 模板(template)中的内嵌表达式，逻辑较为复杂时，会使模板过重，且难以维护。 例如： 123&amp;lt;div id=&quot;example&quot;&amp;gt;  &amp;#123;&amp;#123;message.split(&apos;&apos;).reverse().join(&apos;&apos;)&amp;#125;&amp;lt;/div&amp;gt;">
+<meta name="keywords" content="JS,Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue中，计算属性vs方法vs侦听属性">
+<meta property="og:url" content="http://yoursite.com/2019/03/21/Vue中，计算属性vs方法vs侦听属性/index.html">
+<meta property="og:site_name" content="Leo Chen&#39;s Blog">
+<meta property="og:description" content="template 中，内嵌的表达式，可以添加简单的运算，以便动态绑定显示一些值。  计算属性：当 Vue.js 模板(template)中的内嵌表达式，逻辑较为复杂时，会使模板过重，且难以维护。 例如： 123&amp;lt;div id=&quot;example&quot;&amp;gt;  &amp;#123;&amp;#123;message.split(&apos;&apos;).reverse().join(&apos;&apos;)&amp;#125;&amp;lt;/div&amp;gt;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-07-08T11:21:57.816Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue中，计算属性vs方法vs侦听属性">
+<meta name="twitter:description" content="template 中，内嵌的表达式，可以添加简单的运算，以便动态绑定显示一些值。  计算属性：当 Vue.js 模板(template)中的内嵌表达式，逻辑较为复杂时，会使模板过重，且难以维护。 例如： 123&amp;lt;div id=&quot;example&quot;&amp;gt;  &amp;#123;&amp;#123;message.split(&apos;&apos;).reverse().join(&apos;&apos;)&amp;#125;&amp;lt;/div&amp;gt;">
+
+<link rel="canonical" href="http://yoursite.com/2019/03/21/Vue中，计算属性vs方法vs侦听属性/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Vue中，计算属性vs方法vs侦听属性 | Leo Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leo Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">一叶浮萍归大海，人生何处不相逢。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/21/Vue中，计算属性vs方法vs侦听属性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpeg">
+      <meta itemprop="name" content="Leo Chen">
+      <meta itemprop="description" content="Not perfect, so need to learn.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leo Chen's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vue中，计算属性vs方法vs侦听属性
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vue/" itemprop="url" rel="index">
+                    <span itemprop="name">Vue</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>template 中，内嵌的表达式，可以添加简单的运算，以便动态绑定显示一些值。</p>
+</blockquote>
+<h2 id="计算属性："><a href="#计算属性：" class="headerlink" title="计算属性："></a>计算属性：</h2><p>当 Vue.js 模板(template)中的内嵌表达式，逻辑较为复杂时，会使模板过重，且难以维护。</p>
+<p>例如：</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="keyword">div</span> id=<span class="string">"example"</span>&gt;</span><br><span class="line">  &#123;&#123;message.split(<span class="string">''</span>).<span class="keyword">reverse</span>().join(<span class="string">''</span>)&#125;</span><br><span class="line">&lt;/<span class="keyword">div</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<p>这时，模板中已经不算是简单的生命是逻辑，这里更优的做法，是将属性的计算方法，放到 computed 属性中。</p>
+<h3 id="基础例子："><a href="#基础例子：" class="headerlink" title="基础例子："></a>基础例子：</h3><p><strong>template:</strong></p>
+<figure class="highlight django"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"example"</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Original message: "</span><span class="template-variable">&#123;&#123; message &#125;&#125;</span><span class="xml">"<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Computed reversed message: "</span><span class="template-variable">&#123;&#123; reversedMessage &#125;&#125;</span><span class="xml">"<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>js:</strong></p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var <span class="keyword">vm</span> = <span class="keyword">new</span> Vue(&#123; // <span class="keyword">vm</span> = <span class="keyword">view</span> model</span><br><span class="line">  <span class="keyword">e</span><span class="variable">l:</span> <span class="string">'#example'</span>,</span><br><span class="line">  dat<span class="variable">a:</span> &#123;</span><br><span class="line">    message: <span class="string">'Hello'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    // 计算属性的 getter</span><br><span class="line">    reversedMessage: <span class="function"><span class="keyword">function</span> <span class="params">()</span> &#123;</span></span><br><span class="line">      // `this` 指向 <span class="keyword">vm</span> 实例</span><br><span class="line">      <span class="keyword">return</span> this.message.<span class="keyword">split</span>(<span class="string">''</span>).<span class="built_in">reverse</span>().<span class="keyword">join</span>(<span class="string">''</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="结果："><a href="#结果：" class="headerlink" title="结果："></a>结果：</h3><p>Original message: <strong>“Hello”</strong></p>
+<p>Computed reversed message: <strong>“olleH”</strong></p>
+<h2 id="2-计算属性-vs-方法："><a href="#2-计算属性-vs-方法：" class="headerlink" title="2. 计算属性 vs 方法："></a>2. 计算属性 vs 方法：</h2><p>上边的这个例子，通过表达式的形式，在<strong>methods</strong>中同样可以实现。</p>
+<p><strong>template:</strong></p>
+<figure class="highlight django"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Reversed message: "</span><span class="template-variable">&#123;&#123; reversedMessage() &#125;&#125;</span><span class="xml">"<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>js:</strong></p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在组件中</span></span><br><span class="line">methods: &#123;</span><br><span class="line">  reversedMessage() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.message.<span class="built_in">split</span>(<span class="string">''</span>).<span class="built_in">reverse</span>().<span class="built_in">join</span>(<span class="string">''</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这两种的实现方法，最后的结果是相同的。</p>
+<h3 id="不同点："><a href="#不同点：" class="headerlink" title="不同点："></a>不同点：</h3><p>计算属性是基于它们的<strong>响应式依赖</strong>进行<strong>缓存</strong>的，只在相关响应式依赖发生改变时，才会重新求值。</p>
+<p>这就意味着，只要上边例子中的 message 没有发生改变，多次访问 reversed 计算属性，会<strong>立即返回</strong>之前的计算结果，而不会再次执行函数。</p>
+<h3 id="注：Date-now"><a href="#注：Date-now" class="headerlink" title="注：Date.now()"></a>注：Date.now()</h3><p>这也同样意味着，下面的计算属性将不再更新，因为<strong>Date.now()</strong>不是响应式依赖：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">computed</span>: &#123;</span><br><span class="line">  <span class="attribute">now</span>: function () &#123;</span><br><span class="line">    return Date.<span class="built_in">now</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相比之下，每当触发重新渲染时，调用方法将总会再次执行函数。</p>
+<h3 id="为什么要缓存？"><a href="#为什么要缓存？" class="headerlink" title="为什么要缓存？"></a>为什么要缓存？</h3><ul>
+<li>原因：当我们有一个性能开销比较大的计算属性<strong>A</strong>，它需要遍历一个巨大的数组并做大量的运算。然后我们可能有其他的计算属性依赖于<strong>A</strong>。<br>如果这种情况下<strong>没有缓存</strong>，我们将不可避免地多次执行<strong>A</strong>的 getter！</li>
+</ul>
+<p>反之，如果不希望缓存的场景下，可以用方法替代。</p>
+<h2 id="计算属性-vs-侦听属性："><a href="#计算属性-vs-侦听属性：" class="headerlink" title="计算属性 vs 侦听属性："></a>计算属性 vs 侦听属性：</h2><p>Vue 中提供了一种更通用的方式来观察和响应 VUe 实例上的数据变动：<strong>侦听属性</strong>。</p>
+<p>当有一些数据，需要随着他的数据变动而改变时，很容易就滥用<strong>watch</strong>。然而，通常更好的做法是：使用计算属性而不是命令式 watch 回调。</p>
+<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><p><strong>template:</strong></p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="keyword">div</span> <span class="built_in">id</span>=<span class="string">"demo"</span>&gt;&#123;&#123; fullName &#125;&#125;&lt;/<span class="keyword">div</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>js:</strong></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> vm = new Vue(&#123;</span><br><span class="line">el: <span class="string">'#demo'</span>,</span><br><span class="line"><span class="keyword">data</span>: &#123;</span><br><span class="line">  firstName: <span class="string">'Foo'</span>,</span><br><span class="line">  lastName: <span class="string">'Bar'</span>,</span><br><span class="line">  fullName: <span class="string">'Foo Bar'</span></span><br><span class="line">&#125;,</span><br><span class="line">watch: &#123;</span><br><span class="line">  firstName: function (<span class="keyword">val</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.fullName = <span class="keyword">val</span> + <span class="string">' '</span> + <span class="keyword">this</span>.lastName</span><br><span class="line">  &#125;,</span><br><span class="line">  lastName: function (<span class="keyword">val</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.fullName = <span class="keyword">this</span>.firstName + <span class="string">' '</span> + <span class="keyword">val</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>上边的代码是命令式且重复的，将它与计算属性的版本进行比较：</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#demo'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: <span class="string">'Foo'</span>,</span><br><span class="line">    lastName: <span class="string">'Bar'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    fullName: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.firstName + <span class="string">' '</span> + <span class="keyword">this</span>.lastName</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="计算属性的setter："><a href="#计算属性的setter：" class="headerlink" title="计算属性的setter："></a>计算属性的setter：</h2><p>计算属性默认只有<strong>getter</strong>，不过在需要时也可以提供一个<strong>setter</strong>：</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...</span></span><br><span class="line">computed: &#123;</span><br><span class="line">  fullName: &#123;</span><br><span class="line">    <span class="comment">// getter</span></span><br><span class="line">    <span class="keyword">get</span>: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.firstName + <span class="string">' '</span> + <span class="keyword">this</span>.lastName</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// setter</span></span><br><span class="line">    <span class="keyword">set</span>: <span class="function"><span class="keyword">function</span> <span class="params">(newValue)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> names = newValue.split(<span class="string">' '</span>)</span><br><span class="line">      <span class="keyword">this</span>.firstName = names[<span class="number">0</span>]</span><br><span class="line">      <span class="keyword">this</span>.lastName = names[names.length - <span class="number">1</span>]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<p>现在再运行vm.fullName = ‘xxx yy’ 时，setter会被调用，同时vm.firstName 和 vm.lastName 也会相应地被更新。</p>
+<h2 id="侦听器："><a href="#侦听器：" class="headerlink" title="侦听器："></a>侦听器：</h2><p>虽然计算属性在大多数情况下更合适，但有时也需要一个自定义的侦听器。这就是为什么Vue通过<strong>watch</strong>属性提供了一个更通用的方法，来响应数据的变化。</p>
+<ul>
+<li>使用场景：当需要在数据变化时，执行<strong>异步或开销较大</strong>的操作时，使用<strong>watch</strong>是更优的。</li>
+</ul>
+<p>例如：</p>
+<p><strong>template:</strong></p>
+<figure class="highlight django"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"watch-example"</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">    Ask a yes/no question:</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">v-model</span>=<span class="string">"question"</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><span class="template-variable">&#123;&#123; answer &#125;&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>js:</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 因为 AJAX 库和通用工具的生态已经相当丰富，Vue 核心代码没有重复 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 提供这些功能以保持精简。这也可以让你自由选择自己更熟悉的工具。 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> watchExampleVM = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="actionscript">  el: <span class="string">'#watch-example'</span>,</span></span><br><span class="line">  data: &#123;</span><br><span class="line"><span class="actionscript">    question: <span class="string">''</span>,</span></span><br><span class="line"><span class="vbscript">    answer: <span class="comment">'I cannot give you an answer until you ask a question!'</span></span></span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line"><span class="actionscript">    <span class="comment">// 如果 `question` 发生改变，这个函数就会运行</span></span></span><br><span class="line"><span class="actionscript">    question: <span class="function"><span class="keyword">function</span> <span class="params">(newQuestion, oldQuestion)</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">      <span class="keyword">this</span>.answer = <span class="string">'Waiting for you to stop typing...'</span></span></span><br><span class="line"><span class="actionscript">      <span class="keyword">this</span>.debouncedGetAnswer()</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"><span class="actionscript">  created: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="comment">// `_.debounce` 是一个通过 Lodash 限制操作频率的函数。</span></span></span><br><span class="line"><span class="actionscript">    <span class="comment">// 在这个例子中，我们希望限制访问 yesno.wtf/api 的频率</span></span></span><br><span class="line"><span class="actionscript">    <span class="comment">// AJAX 请求直到用户输入完毕才会发出。想要了解更多关于</span></span></span><br><span class="line"><span class="actionscript">    <span class="comment">// `_.debounce` 函数 (及其近亲 `_.throttle`) 的知识，</span></span></span><br><span class="line"><span class="actionscript">    <span class="comment">// 请参考：https://lodash.com/docs#debounce</span></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">this</span>.debouncedGetAnswer = _.debounce(<span class="keyword">this</span>.getAnswer, <span class="number">500</span>)</span></span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line"><span class="actionscript">    getAnswer: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">      <span class="keyword">if</span> (<span class="keyword">this</span>.question.indexOf(<span class="string">'?'</span>) === <span class="number">-1</span>) &#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.answer = <span class="string">'Questions usually contain a question mark. ;-)'</span></span></span><br><span class="line"><span class="actionscript">        <span class="keyword">return</span></span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="actionscript">      <span class="keyword">this</span>.answer = <span class="string">'Thinking...'</span></span></span><br><span class="line"><span class="actionscript">      <span class="keyword">var</span> vm = <span class="keyword">this</span></span></span><br><span class="line"><span class="vbscript">      axios.<span class="keyword">get</span>(<span class="comment">'https://yesno.wtf/api')</span></span></span><br><span class="line"><span class="actionscript">        .then(<span class="function"><span class="keyword">function</span> <span class="params">(response)</span> </span>&#123;</span></span><br><span class="line"><span class="vbscript">          vm.answer = _.capitalize(<span class="built_in">response</span>.data.answer)</span></span><br><span class="line">        &#125;)</span><br><span class="line"><span class="actionscript">        .catch(<span class="function"><span class="keyword">function</span> <span class="params">(error)</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">          vm.answer = <span class="string">'Error! Could not reach the API. '</span> + error</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个示例中，使用watch属性，允许我们执行<strong>请求一个API</strong>（异步操作），限制我们执行操作的频率，并在得到最终的结果前，设置<strong>中间状态</strong>。这些都是计算属性无法做到的。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"> <i class="fa fa-tag"></i> JS</a>
+              <a href="/tags/Vue/" rel="tag"> <i class="fa fa-tag"></i> Vue</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/03/12/package.json中dependencies和devDependencies的区别/" rel="next" title="package.json中dependencies和devDependencies的区别">
+                  <i class="fa fa-chevron-left"></i> package.json中dependencies和devDependencies的区别
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/06/06/浏览器的工作原理及JS的运行机制/" rel="prev" title="浏览器的工作原理及JS的运行机制">
+                  浏览器的工作原理及JS的运行机制 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#计算属性："><span class="nav-number">1.</span> <span class="nav-text">计算属性：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础例子："><span class="nav-number">1.1.</span> <span class="nav-text">基础例子：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结果："><span class="nav-number">1.2.</span> <span class="nav-text">结果：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-计算属性-vs-方法："><span class="nav-number">2.</span> <span class="nav-text">2. 计算属性 vs 方法：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不同点："><span class="nav-number">2.1.</span> <span class="nav-text">不同点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注：Date-now"><span class="nav-number">2.2.</span> <span class="nav-text">注：Date.now()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要缓存？"><span class="nav-number">2.3.</span> <span class="nav-text">为什么要缓存？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算属性-vs-侦听属性："><span class="nav-number">3.</span> <span class="nav-text">计算属性 vs 侦听属性：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子："><span class="nav-number">3.1.</span> <span class="nav-text">例子：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算属性的setter："><span class="nav-number">4.</span> <span class="nav-text">计算属性的setter：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#侦听器："><span class="nav-number">5.</span> <span class="nav-text">侦听器：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Leo Chen"
+    src="/img/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leo Chen</p>
+  <div class="site-description" itemprop="description">Not perfect, so need to learn.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leocs2417" title="GitHub &rarr; https://github.com/leocs2417" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn" rel="noopener" target="_blank">辽ICP备17015710号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Chen</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+<script src="/js/next-boot.js?v=7.4.2"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.2"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

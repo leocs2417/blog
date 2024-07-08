@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 2px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true},
+    copycode: {"enable":true,"show_result":true,"style":"flat"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":"auto","trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="电脑端有着更好的处理器, 并且与网络的连接, 通常比移动端设备的网络速度更快速和稳定. 通常情况下, 在网站中即使做了针对移动设备的优化, 加载速度可能也会比在电脑端慢.">
+<meta name="keywords" content="JS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何优化Web移动端的加载速度?">
+<meta property="og:url" content="http://yoursite.com/2019/11/07/如何优化Web移动端的加载速度/index.html">
+<meta property="og:site_name" content="Leo Chen&#39;s Blog">
+<meta property="og:description" content="电脑端有着更好的处理器, 并且与网络的连接, 通常比移动端设备的网络速度更快速和稳定. 通常情况下, 在网站中即使做了针对移动设备的优化, 加载速度可能也会比在电脑端慢.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-07-08T11:21:57.816Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何优化Web移动端的加载速度?">
+<meta name="twitter:description" content="电脑端有着更好的处理器, 并且与网络的连接, 通常比移动端设备的网络速度更快速和稳定. 通常情况下, 在网站中即使做了针对移动设备的优化, 加载速度可能也会比在电脑端慢.">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/07/如何优化Web移动端的加载速度/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>如何优化Web移动端的加载速度? | Leo Chen's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leo Chen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">一叶浮萍归大海，人生何处不相逢。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/07/如何优化Web移动端的加载速度/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpeg">
+      <meta itemprop="name" content="Leo Chen">
+      <meta itemprop="description" content="Not perfect, so need to learn.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leo Chen's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何优化Web移动端的加载速度?
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>电脑端有着更好的处理器, 并且与网络的连接, 通常比移动端设备的网络速度更快速和稳定. 通常情况下, 在网站中即使做了针对移动设备的优化, 加载速度可能也会比在电脑端慢.</p>
+</blockquote>
+<a id="more"></a>
+
+<p>页面速度(或网站加载速度)是移动搜索引擎优化(SEO)的主要方面. Web性能不仅影响搜索排名, 影响用户的移动体验. </p>
+<h2 id="如何优化移动端页面加载速度"><a href="#如何优化移动端页面加载速度" class="headerlink" title="如何优化移动端页面加载速度:"></a>如何优化移动端页面加载速度:</h2><h3 id="加载相关"><a href="#加载相关" class="headerlink" title="加载相关:"></a>加载相关:</h3><h4 id="首屏渲染优化"><a href="#首屏渲染优化" class="headerlink" title="首屏渲染优化:"></a>首屏渲染优化:</h4><ul>
+<li><p>尽量避免<strong>非首屏资源</strong>的加载: </p>
+<p>首屏渲染速度会直接影响终端用户对网站加载速度的印象, 首先要减少首屏渲染加载的资源, 进而加快首屏渲染速度.</p>
+</li>
+<li><p>采用<strong>组件化开发</strong>, 按需加载:</p>
+<p>使用Vue/React等成熟第三方JS框架开发时, 可以配合webpack等使用组件/组件库的按需加载, 进而减少首屏加载的资源.</p>
+</li>
+</ul>
+<h4 id="预加载和懒加载"><a href="#预加载和懒加载" class="headerlink" title="预加载和懒加载:"></a>预加载和懒加载:</h4><ul>
+<li><p>预加载其他页面或资源:</p>
+<p>在首屏渲染结束后, 可以先预先加载其他主要页面, 进而加快交互后的加载速度.</p>
+</li>
+<li><p>图片或列表的懒加载:</p>
+<p>当用户主动点击/滚动交互到特定位置时, 采用<strong>LazyLoad</strong>的形式加载图片或列表等.</p>
+</li>
+</ul>
+<ul>
+<li><p>采用CDN加速</p>
+<p>一些静态资源可以利用CDN的方式引入, 使其缓存在浏览器中, 进而减少开销.</p>
+</li>
+</ul>
+<h3 id="资源压缩与合并"><a href="#资源压缩与合并" class="headerlink" title="资源压缩与合并:"></a>资源压缩与合并:</h3><h4 id="资源的压缩"><a href="#资源的压缩" class="headerlink" title="资源的压缩:"></a>资源的压缩:</h4><ul>
+<li>图片的压缩: 利用第三方工具减小图片的体积.</li>
+</ul>
+<h4 id="资源合并"><a href="#资源合并" class="headerlink" title="资源合并"></a>资源合并</h4><ul>
+<li><p>使用<code>CSS</code>雪碧图: 把需要的一些图片整合成一张</p>
+<p>优点: 减少<strong>HTTP请求次数</strong>(backgroundPosition).</p>
+<p>缺点: 图片比较大时, 加载慢, 且存在加载失败都不能显示的风险. </p>
+</li>
+<li><p>利用webpack等工具, 合理地<strong>合并代码</strong>, 进而减少<strong>HTTP请求次数</strong>.</p>
+</li>
+</ul>
+<h3 id="合理利用缓存"><a href="#合理利用缓存" class="headerlink" title="合理利用缓存:"></a>合理利用缓存:</h3><ul>
+<li><p>localStorage</p>
+<p>一些非必要实时更新的参数, 可以利用缓存放在本地, 进而减少请求.</p>
+</li>
+</ul>
+<h3 id="渲染优化"><a href="#渲染优化" class="headerlink" title="渲染优化:"></a>渲染优化:</h3><ul>
+<li><p>16ms优化:</p>
+<p>目前大多数设备的屏幕刷新率仍为60hz, 每帧所消耗的时间约为16ms, 这16ms就是渲染帧的时长.</p>
+<p>浏览器还有一些整理工作要做, 因此一次EventLoop内的视图渲染要在10ms内完成.</p>
+<p>如果超出这个时间, 将会出现掉帧的表现.</p>
+</li>
+<li><p>减少重绘和重排(回流)</p>
+<p>页面的重绘和重排(回流)很耗性能, 所以一定要尽可能减少页面的重绘和重排(回流), 例如页面图片大小变化、元素位置变化等这些情况都会导致重绘和重排(回流).</p>
+</li>
+</ul>
+<h3 id="防抖与节流"><a href="#防抖与节流" class="headerlink" title="防抖与节流:"></a>防抖与节流:</h3><ul>
+<li><p>常见场景: </p>
+<p>窗口<strong>resize</strong>, <strong>scroll</strong>,以及input框中搜索请求数据等.</p>
+</li>
+<li><p>合理使用防抖/节流:</p>
+<p>减少<strong>函数调用次数</strong>、<strong>网络请求次数</strong>.</p>
+</li>
+</ul>
+<h3 id="为什么要减少HTTP请求"><a href="#为什么要减少HTTP请求" class="headerlink" title="为什么要减少HTTP请求?"></a>为什么要减少HTTP请求?</h3><ul>
+<li><p>HTTP请求建立和释放需要时间:<br>客户端连接到Web服务器-&gt;发送HTTP请求-&gt;服务器接受请求并返回HTTP响应-&gt;释放连接TCP链接</p>
+<p>如果http请求很多, 不合并http请求就会耗费大量时间再建立和释放上.</p>
+</li>
+<li><p>浏览器对同个域名下的并发请求数量是有限制的: </p>
+<p>若并发请求过多, 后续的请求只能等前面的结束完后才开始.</p>
+<p>所以要尽量减少页面的请求数, 首次加载同时请求数不能超过4个.</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"> <i class="fa fa-tag"></i> JS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/09/12/防抖与节流的简单实现/" rel="next" title="JS中函数的防抖(debounce)与节流(throttle)">
+                  <i class="fa fa-chevron-left"></i> JS中函数的防抖(debounce)与节流(throttle)
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/11/11/Vue中的nextTick的实现原理/" rel="prev" title="Vue中, nextTick的实现原理">
+                  Vue中, nextTick的实现原理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何优化移动端页面加载速度"><span class="nav-number">1.</span> <span class="nav-text">如何优化移动端页面加载速度:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加载相关"><span class="nav-number">1.1.</span> <span class="nav-text">加载相关:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#首屏渲染优化"><span class="nav-number">1.1.1.</span> <span class="nav-text">首屏渲染优化:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#预加载和懒加载"><span class="nav-number">1.1.2.</span> <span class="nav-text">预加载和懒加载:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源压缩与合并"><span class="nav-number">1.2.</span> <span class="nav-text">资源压缩与合并:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#资源的压缩"><span class="nav-number">1.2.1.</span> <span class="nav-text">资源的压缩:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#资源合并"><span class="nav-number">1.2.2.</span> <span class="nav-text">资源合并</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合理利用缓存"><span class="nav-number">1.3.</span> <span class="nav-text">合理利用缓存:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染优化"><span class="nav-number">1.4.</span> <span class="nav-text">渲染优化:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防抖与节流"><span class="nav-number">1.5.</span> <span class="nav-text">防抖与节流:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要减少HTTP请求"><span class="nav-number">1.6.</span> <span class="nav-text">为什么要减少HTTP请求?</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Leo Chen"
+    src="/img/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leo Chen</p>
+  <div class="site-description" itemprop="description">Not perfect, so need to learn.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leocs2417" title="GitHub &rarr; https://github.com/leocs2417" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn" rel="noopener" target="_blank">辽ICP备17015710号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Chen</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+<script src="/js/next-boot.js?v=7.4.2"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.2"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
