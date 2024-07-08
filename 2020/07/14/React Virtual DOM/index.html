@@ -73,14 +73,14 @@
 <meta property="og:site_name" content="Leo Chen&#39;s Blog">
 <meta property="og:description" content="如大家熟知，在目前主流的JS框架中，React, Vue均使用了虚拟DOM概念，来进行数据驱动视图的更新。  下面我们分三个部分讨论一下虚拟DOM在React中的原理和特点。  什么是虚拟DOM?  深入了解虚拟DOM  虚拟DOM中的diff概念">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/assets/image/reactState.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/image/reactDiff.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/image/reactKeys.jpg">
-<meta property="og:updated_time" content="2024-07-08T11:21:57.815Z">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/reactState.jpg">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/reactDiff.jpg">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/reactKeys.jpg">
+<meta property="og:updated_time" content="2024-07-08T12:19:28.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React Virtual DOM">
 <meta name="twitter:description" content="如大家熟知，在目前主流的JS框架中，React, Vue均使用了虚拟DOM概念，来进行数据驱动视图的更新。  下面我们分三个部分讨论一下虚拟DOM在React中的原理和特点。  什么是虚拟DOM?  深入了解虚拟DOM  虚拟DOM中的diff概念">
-<meta name="twitter:image" content="http://yoursite.com/assets/image/reactState.jpg">
+<meta name="twitter:image" content="http://yoursite.com/blog/assets/image/reactState.jpg">
 
 <link rel="canonical" href="http://yoursite.com/2020/07/14/React Virtual DOM/">
 
@@ -401,10 +401,10 @@
 <p>比较原始虚拟DOM和新的虚拟DOM的比对，找出差异。</p>
 </li>
 <li><p>问题3：setSate 关键字：异步 (为什么？若连续setState三次，之更新一次虚拟DOM)</p>
-<p><img src="/assets/image/reactState.jpg" alt="&#39;state&#39;"></p>
+<p><img src="/blog/assets/image/reactState.jpg" alt="&#39;state&#39;"></p>
 </li>
 <li><p>问题4：怎么比对的？逻辑是什么？</p>
-<p>从顶层开始，逐层，同层比对：<br><img src="/assets/image/reactDiff.jpg" alt="&#39;diff&#39;"></p>
+<p>从顶层开始，逐层，同层比对：<br><img src="/blog/assets/image/reactDiff.jpg" alt="&#39;diff&#39;"></p>
 <p>a. 做法：若某一层不同，下边所有节点全部更新。</p>
 <p>b. 另一个问题：若是这样做，只有外层一层不一样，下边所有子节点全相同，岂不是很浪费？</p>
 <p>c. 为什么这样：同层比对的算法，简单，比对速度快，进而减少了比对算法上的性能消耗</p>
@@ -412,7 +412,7 @@
 </ul>
 <ol start="3">
 <li><p>without keys VS with keys</p>
-<p><img src="/assets/image/reactKeys.jpg" alt="&#39;keys&#39;"></p>
+<p><img src="/blog/assets/image/reactKeys.jpg" alt="&#39;keys&#39;"></p>
 <p>场景：</p>
 <ul>
 <li><p>假设有一个数组，包含五个数据，页面第一次渲染时，会把这五个数据映射成五个虚拟DOM节点，生成虚拟DOM树，如图左。</p>

@@ -73,16 +73,16 @@
 <meta property="og:site_name" content="Leo Chen&#39;s Blog">
 <meta property="og:description" content="浏览器的工作原理及JS的运行机制。  大纲 浏览器是多进程的 梳理浏览器内核中线程之间的关系 浏览器渲染流程 从Event Loop谈JS的运行机制 事件循环进阶：macrotask与microtask 浏览器的安全  宏观视角下的浏览器Chrome架构：仅仅打开一个页面，为什么有多个进程？">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/assets/image/process.png">
-<meta property="og:image" content="http://yoursite.com/assets/image/render-page.png">
-<meta property="og:image" content="http://yoursite.com/assets/image/browser-communication.png">
-<meta property="og:image" content="http://yoursite.com/assets/image/evt.png">
-<meta property="og:image" content="http://yoursite.com/assets/image/task.png">
-<meta property="og:updated_time" content="2024-07-08T11:21:57.816Z">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/process.png">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/render-page.png">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/browser-communication.png">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/evt.png">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/task.png">
+<meta property="og:updated_time" content="2024-07-08T12:19:28.726Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浏览器的工作原理及JS的运行机制">
 <meta name="twitter:description" content="浏览器的工作原理及JS的运行机制。  大纲 浏览器是多进程的 梳理浏览器内核中线程之间的关系 浏览器渲染流程 从Event Loop谈JS的运行机制 事件循环进阶：macrotask与microtask 浏览器的安全  宏观视角下的浏览器Chrome架构：仅仅打开一个页面，为什么有多个进程？">
-<meta name="twitter:image" content="http://yoursite.com/assets/image/process.png">
+<meta name="twitter:image" content="http://yoursite.com/blog/assets/image/process.png">
 
 <link rel="canonical" href="http://yoursite.com/2019/06/06/浏览器的工作原理及JS的运行机制/">
 
@@ -317,7 +317,7 @@
 </li>
 </ol>
 <p>参考图：</p>
-<p><img src="/assets/image/process.png" alt></p>
+<p><img src="/blog/assets/image/process.png" alt></p>
 <h3 id="多进程的优势？"><a href="#多进程的优势？" class="headerlink" title="多进程的优势？"></a>多进程的优势？</h3><ul>
 <li><p>单个页面或第三方插件<strong>Crash</strong>，不会影响整个浏览器。</p>
 </li>
@@ -398,7 +398,7 @@
 <li>根据Render Tree开始渲染和展示。</li>
 <li>遇见<strong>&lt;script&gt;</strong>标签，执行，并阻塞渲染。（与JS引擎线程互斥）</li>
 </ol>
-<p>参考图：<img src="/assets/image/render-page.png" alt="Render process"></p>
+<p>参考图：<img src="/blog/assets/image/render-page.png" alt="Render process"></p>
 <h3 id="WebWorker（HTML5-API）（简略）"><a href="#WebWorker（HTML5-API）（简略）" class="headerlink" title="WebWorker（HTML5 API）（简略）"></a>WebWorker（HTML5 API）（简略）</h3><h4 id="应用场景："><a href="#应用场景：" class="headerlink" title="应用场景："></a>应用场景：</h4><ul>
 <li><p>比如页面中包含耗时较大的算法代码时，就会阻塞线程影响浏览器渲染等。这时候就可把比较耗时的代码，放到<strong>WebWorker</strong>(另一个线程)中执行。</p>
 </li>
@@ -453,7 +453,7 @@
 </ul>
 </li>
 </ol>
-<p>通信的过程参考图：<br><img src="/assets/image/browser-communication.png" alt="&#39;Browser communication&#39;"></p>
+<p>通信的过程参考图：<br><img src="/blog/assets/image/browser-communication.png" alt="&#39;Browser communication&#39;"></p>
 <h2 id="V8工作原理（简略）"><a href="#V8工作原理（简略）" class="headerlink" title="V8工作原理（简略）"></a>V8工作原理（简略）</h2><h3 id="栈空间和堆空间：数据是如何存储的？"><a href="#栈空间和堆空间：数据是如何存储的？" class="headerlink" title="栈空间和堆空间：数据是如何存储的？"></a>栈空间和堆空间：数据是如何存储的？</h3><ul>
 <li><p>在JavaScript的执行过程中，主要有三种类型内存空间：代码空间、栈空间、堆空间。</p>
 </li>
@@ -479,7 +479,7 @@
 <li><p>一旦<strong>执行栈</strong>中的同步任务全部执行完毕，即此时JS引擎线程空闲，就会开始读取任务队列，将可运行的异步任务加到执行栈中，开始执行。</p>
 </li>
 </ul>
-<p>流程如图：<br>    <img src="/assets/image/evt.png" alt="&#39;Event process img&#39;"></p>
+<p>流程如图：<br>    <img src="/blog/assets/image/evt.png" alt="&#39;Event process img&#39;"></p>
 <h3 id="定时器："><a href="#定时器：" class="headerlink" title="定时器："></a>定时器：</h3><p>上边的EventLoop机制的核心就是：<strong>JS引擎线程</strong>和<strong>事件触发线程</strong>。</p>
 <ul>
 <li>在浏览器中，定时器不是JS引擎线程来控制的，而是由浏览器单独起一个定时器线程来计时的。</li>
@@ -548,7 +548,7 @@ console.log(&apos;begin&apos;);</code></pre><p><strong>注：</strong></p>
 </li>
 </ul>
 <p>如图：</p>
-<p><img src="/assets/image/task.png" alt="&#39;task img&#39;"></p>
+<p><img src="/blog/assets/image/task.png" alt="&#39;task img&#39;"></p>
 <p>一段代码：</p>
 <pre><code>async function async1() {
     console.log(1)

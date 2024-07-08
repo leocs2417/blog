@@ -73,12 +73,12 @@
 <meta property="og:site_name" content="Leo Chen&#39;s Blog">
 <meta property="og:description" content="是现阶段较流行的企业业务整合的解决方案之一。 SSO的定义是在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。  技术背景： 随着各大企业的业务范围的增大，大多会有多个同时使用的系统，每个系统都会有一套独立的登录模块。这样就会造成：使用人员在操作不同系统的时候，就需要多次进行登录的操作，不是很便捷。为了解决这个痛点，所以SSO就应运而生。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/assets/image/sso.png">
-<meta property="og:updated_time" content="2024-07-08T11:21:57.816Z">
+<meta property="og:image" content="http://yoursite.com/blog/assets/image/sso.png">
+<meta property="og:updated_time" content="2024-07-08T12:19:28.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="单点登录(SSO)">
 <meta name="twitter:description" content="是现阶段较流行的企业业务整合的解决方案之一。 SSO的定义是在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。  技术背景： 随着各大企业的业务范围的增大，大多会有多个同时使用的系统，每个系统都会有一套独立的登录模块。这样就会造成：使用人员在操作不同系统的时候，就需要多次进行登录的操作，不是很便捷。为了解决这个痛点，所以SSO就应运而生。">
-<meta name="twitter:image" content="http://yoursite.com/assets/image/sso.png">
+<meta name="twitter:image" content="http://yoursite.com/blog/assets/image/sso.png">
 
 <link rel="canonical" href="http://yoursite.com/2022/03/10/单点登录(SSO)/">
 
@@ -271,7 +271,7 @@
 
 <h2 id="技术实现："><a href="#技术实现：" class="headerlink" title="技术实现："></a>技术实现：</h2><h3 id="1-普通登录的认证机制"><a href="#1-普通登录的认证机制" class="headerlink" title="1. 普通登录的认证机制"></a>1. 普通登录的认证机制</h3><p>  客户端(cookie) =&gt; 服务端(session)<br>  客户端登录后，会将cookie传给服务端，服务端通过cookie找到对应的唯一登录态session，来判断当前用户是否登录</p>
 <h3 id="2-同一个顶级域名的“单点登录”"><a href="#2-同一个顶级域名的“单点登录”" class="headerlink" title="2. 同一个顶级域名的“单点登录”"></a>2. 同一个顶级域名的“单点登录”</h3><p>  如果同一个域名下，存在着多个系统，分别对应着不同的子域名，此时还是可以<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies#cookie_%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F" target="_blank" rel="noopener">将cookie存到顶级域名</a>上去，从而实现多个子域名可以同时访问同一个cookie，进而服务端通过共享session来实现这个同域下的“单点登录”。</p>
-<h3 id="3-真正的单点登录实现逻辑"><a href="#3-真正的单点登录实现逻辑" class="headerlink" title="3. 真正的单点登录实现逻辑"></a>3. 真正的单点登录实现逻辑</h3><p>  通常我们所指的单点登录，是在不同域下的。<br>  <img src="/assets/image/sso.png" alt="&#39;sso&#39;"></p>
+<h3 id="3-真正的单点登录实现逻辑"><a href="#3-真正的单点登录实现逻辑" class="headerlink" title="3. 真正的单点登录实现逻辑"></a>3. 真正的单点登录实现逻辑</h3><p>  通常我们所指的单点登录，是在不同域下的。<br>  <img src="/blog/assets/image/sso.png" alt="&#39;sso&#39;"></p>
 <p>  上图为CAS官网上的标准流程图，具体流程如下：</p>
 <ol>
 <li>用户访问app系统，app系统是需要登录的，但用户现在没有登录。</li>
