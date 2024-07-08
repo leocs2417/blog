@@ -30,7 +30,7 @@ tags:
 ### 3. 真正的单点登录实现逻辑
 
   通常我们所指的单点登录，是在不同域下的。
-  !['sso'](/assets/image/sso.png)
+  !['sso'](/blog/assets/image/sso.png)
 
   上图为CAS官网上的标准流程图，具体流程如下：
 

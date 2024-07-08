@@ -33,13 +33,13 @@ tags:
 - const 简单类型的常量，一旦声明不可更改。复杂类型（对象，数组等）等指向指针的地址不能更改，内部数据可以改。
 
 ## 普通for循环中，var的行为：
-!['var loop'](/assets/image/varLoop.jpg)
+!['var loop'](/blog/assets/image/varLoop.jpg)
 
 - 从上图可以看到，**var**声明的变量循环，变量**i**在循环体的外部，依然能访问的到。
 - 在大多数时候，我们希望把**i**变量限制在**{}**的局部作用域中。而不是全局的window中。
 
 ## 普通for循环中，let的行为：
-!['let loop'](/assets/image/letLoop.jpg)
+!['let loop'](/blog/assets/image/letLoop.jpg)
 
 - 从上图可以看到，**let**声明的变量循环，变量**j**在循环体的外部，访问会报错，变量**j**被限制在块级作用域内。
 - 这样意味着，只能在其声明的**块{}**内部访问到。
@@ -50,7 +50,7 @@ tags:
 - 由于这个原因，它是所有3个声明语句中**最安全**的选择。
 - 下图为const声明变量的for循环。
 
-!['const loop'](/assets/image/constLoop.jpg)
+!['const loop'](/blog/assets/image/constLoop.jpg)
 
 - 它只执行了一次循环，随即出现了报错。
 - 在传统的for循环中，迭代器只在操作开始时声明一次，所以这里是使用let的好地方!
@@ -58,12 +58,12 @@ tags:
 ## ESLint报错 **for...of** or **for...in** 循环中推荐使用const声明变量
 
 ### for...in
-!['const in loop'](/assets/image/constInLoop.jpg)
+!['const in loop'](/blog/assets/image/constInLoop.jpg)
 
 - 如上图，使用**for...in**的方式循环使用**const**声明变量是可以的！
 - 在深入检查这些**for...in**循环类型之后，似乎它们在每次循环中都创建了一个新的块范围。这将意味着每个新索引实际上是一个新范围内的新变量，这样我们的**常量**永远不会被重新分配。
 
 ### for...in (let)
-!['let in loop'](/assets/image/letInLoop.jpg)
+!['let in loop'](/blog/assets/image/letInLoop.jpg)
 
 - 如上图，虽然迭代器每次在循环结束时乘以2，但是在下一次执行时，打印的索引只是我们循环遍历的数组中的下一个连续索引。但是在索引轮询结束后，函数块返回6(最后一个索引3乘以2)。

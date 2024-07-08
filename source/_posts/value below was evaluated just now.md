@@ -14,7 +14,7 @@ tags:
 
 ## 现象：
 
-![value-null](/assets/image/value-null.png)
+![value-null](/blog/assets/image/value-null.png)
 
 <!-- more -->
 

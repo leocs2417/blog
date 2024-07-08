@@ -163,12 +163,12 @@ render() {
 
 - 问题3：setSate 关键字：异步 (为什么？若连续setState三次，之更新一次虚拟DOM)
 
-  !['state'](/assets/image/reactState.jpg)
+  !['state'](/blog/assets/image/reactState.jpg)
 
 - 问题4：怎么比对的？逻辑是什么？
 
   从顶层开始，逐层，同层比对：
-  !['diff'](/assets/image/reactDiff.jpg)
+  !['diff'](/blog/assets/image/reactDiff.jpg)
 
   a. 做法：若某一层不同，下边所有节点全部更新。
 
@@ -178,7 +178,7 @@ render() {
 
 3. without keys VS with keys
 
-  !['keys'](/assets/image/reactKeys.jpg)
+  !['keys'](/blog/assets/image/reactKeys.jpg)
 
   场景：
     - 假设有一个数组，包含五个数据，页面第一次渲染时，会把这五个数据映射成五个虚拟DOM节点，生成虚拟DOM树，如图左。
