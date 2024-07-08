@@ -88,7 +88,7 @@ theme: next
 deploy:
   type: git
   repo: git@github.com:leocs2417/blog.git
-  brach: master
+  brach: gh-pages
 
 jsonContent:
     meta: false
