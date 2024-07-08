@@ -2078,7 +2078,7 @@
     "resolve" "^1.10.0"
     "tildify" "^1.2.0"
 
-"hexo-deployer-git@^2.0.0":
+"hexo-deployer-git@^2.1.0":
   "integrity" "sha512-0rx8YVd1UrwD9vUzIPrB7mljLdcmUv0zRj3MAMCBxY7HqI2RM5ZEV0uKxi34qB7LYA80BNl3FWHl2ghO/tKVTA=="
   "resolved" "https://registry.npmjs.org/hexo-deployer-git/-/hexo-deployer-git-2.1.0.tgz"
   "version" "2.1.0"
