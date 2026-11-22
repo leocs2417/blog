@@ -1,0 +1,23 @@
+{
+  "name": "site",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist && node scripts/gen-redirects.mjs",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test:all": "node tests/run-all.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "pagefind": "^1.6.0",
+    "puppeteer-core": "^25.18.1"
+  }
+}

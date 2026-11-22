@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostList from '../components/PostList.astro';
+import { getCollection } from 'astro:content';
+import { sortPosts, BASE } from '../lib/utils';
+
+const posts = sortPosts(await getCollection('posts')).slice(0, 8);
+const total = sortPosts(await getCollection('posts')).length;
+---
+<BaseLayout title="Leo Chen 的博客" active="home">
+  <main>
+    <header class="wrap" style="display:grid; grid-template-columns:1fr auto; gap:48px; align-items:center; padding:72px 24px 56px">
+      <div>
+        <h1 style="font-family:var(--font-display); font-size:44px; font-weight:700; line-height:1.2; letter-spacing:-.5px">
+          你好，我是 Leo Chen<span class="dot" style="color:var(--accent)">.</span>
+        </h1>
+        <p style="margin-top:14px; color:var(--muted); font-size:17px; max-width:520px">
+          前端工程师 · 关注 Vue / React / 浏览器原理与性能优化。这里记录我在工程实践中的思考与踩坑笔记。
+        </p>
+        <div class="social" style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap">
+          <a class="chip" href="https://github.com/leocs2417" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.6 5.6.6 11.9c0 5 3.3 9.3 7.8 10.8.6.1.8-.2.8-.5v-2c-3.2.7-3.8-1.4-3.8-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.5 4.6-1.5 7.8-5.8 7.8-10.8C23.4 5.6 18.3.5 12 .5z"/></svg>
+            GitHub
+          </a>
+          <a class="chip" href="mailto:leochen24@163.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+            Email
+          </a>
+        </div>
+      </div>
+      <img class="avatar" src={`${BASE}assets/avatar.jpeg`} alt="Leo Chen 的头像" width="132" height="132">
+    </header>
+
+    <section class="wrap" style="padding-bottom:64px">
+      <div class="section-title">作品集 / Projects</div>
+      <div style="display:grid; grid-template-columns:1fr; max-width:480px; gap:16px">
+        <a class="p-card" href={`${BASE}posts/high-performance-long-list/`}>
+          <span class="p-name">个人博客
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+          </span>
+          <span class="p-desc">基于 Astro 的静态博客，暗色模式 + 全文搜索</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="wrap" style="padding-bottom:64px">
+      <div class="section-title">最新文章 / Posts</div>
+      <PostList posts={posts} />
+      <div class="more">
+        <a class="btn" href={`${BASE}tags/`}>
+          查看全部 {total} 篇文章
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

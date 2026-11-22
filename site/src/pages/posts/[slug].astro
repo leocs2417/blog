@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { tagSlug, sortPosts, BASE } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.data.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const all = sortPosts(await getCollection('posts'));
+const idx = all.findIndex((p) => p.data.slug === post.data.slug);
+const prev = idx > 0 ? all[idx - 1] : null;
+const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
+---
+<BaseLayout title={`${post.data.title} — Leo Chen`} description={post.data.description}>
+  <main>
+    <article class="article">
+      <div class="prose">
+        <h1>{post.data.title}</h1>
+        <div class="meta">
+          {post.data.tags.map((t) => (
+            <a class="tag" href={`${BASE}tags/${tagSlug(t)}/`}>{t}</a>
+          ))}
+        </div>
+        <div class="content">
+          <Content />
+        </div>
+        <div class="post-footer">
+          <div class="pn">
+            {prev && (
+              <a href={`${BASE}posts/${prev.data.slug}/`}>
+                <div class="dir">← 上一篇</div>
+                <div class="t">{prev.data.title}</div>
+              </a>
+            )}
+            {next && (
+              <a href={`${BASE}posts/${next.data.slug}/`} class="next">
+                <div class="dir">下一篇 →</div>
+                <div class="t">{next.data.title}</div>
+              </a>
+            )}
+          </div>
+          <div style="margin-top:32px; text-align:center">
+            <a class="btn btn-ghost" href={`${BASE}tags/`}>← 返回全部文章</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+</BaseLayout>

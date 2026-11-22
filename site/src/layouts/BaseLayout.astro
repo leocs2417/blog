@@ -1,0 +1,142 @@
+---
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  active?: 'home' | 'tags' | 'about';
+}
+const { title, description = 'Leo Chen 的个人博客 — 前端技术文章', active } = Astro.props;
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content={description}>
+  <meta name="generator" content={Astro.generator} />
+  <link rel="icon" type="image/svg+xml" href={`${B}/favicon.svg`}>
+  <title>{title}</title>
+</head>
+<body>
+  <Nav active={active} />
+
+  <slot />
+
+  <Footer />
+
+  <!-- Search modal -->
+  <div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-modal">
+      <div class="search-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="search-input" placeholder="搜索文章…" aria-label="搜索文章" autocomplete="off">
+        <kbd>ESC</kbd>
+      </div>
+      <div class="search-results" id="search-results">
+        <div class="empty" id="search-empty">输入关键词开始搜索</div>
+      </div>
+      <div class="search-hint">
+        <span><kbd>↑↓</kbd>切换结果</span>
+        <span><kbd>↵</kbd>打开文章</span>
+        <span><kbd>ESC</kbd>关闭</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- Search modal (Pagefind JS API) ----
+    const overlay = document.getElementById('search-overlay')!;
+    const openBtns = document.querySelectorAll('[data-search-open]');
+    const input = document.getElementById('search-input') as HTMLInputElement;
+    const resultsEl = document.getElementById('search-results')!;
+    let pagefind: any = null;
+    let current: HTMLElement[] = [];
+    let curIdx = -1;
+    let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+
+    async function loadPagefind() {
+      if (pagefind) return pagefind;
+      const base = import.meta.env.BASE_URL;
+      pagefind = await import(/* @vite-ignore */ `${base}pagefind/pagefind.js`);
+      return pagefind;
+    }
+
+    function clearCurrent() {
+      current.forEach((el) => el.classList.remove('cur'));
+      curIdx = -1;
+    }
+
+    function renderResults(items: HTMLElement[]) {
+      resultsEl.replaceChildren(...items);
+      current = Array.from(resultsEl.querySelectorAll('.result'));
+    }
+
+    async function doSearch(q: string) {
+      if (!q.trim()) {
+        renderResults([Object.assign(document.createElement('div'), { className: 'empty', textContent: '输入关键词开始搜索' })]);
+        return;
+      }
+      const pf = await loadPagefind();
+      const search = await pf.search(q);
+      const results = await Promise.all(search.results.slice(0, 8).map((r: any) => r.data()));
+      if (!results.length) {
+        renderResults([Object.assign(document.createElement('div'), { className: 'empty', textContent: `没有找到与「${q}」相关的文章` })]);
+        return;
+      }
+      const items = results.map((r: any) => {
+        const a = document.createElement('a');
+        a.className = 'result';
+        a.href = r.url;
+        const t = document.createElement('div');
+        t.className = 'r-title';
+        t.innerHTML = r.meta?.title ?? r.url;
+        const s = document.createElement('div');
+        s.className = 'r-snip';
+        s.innerHTML = r.excerpt;
+        a.append(t, s);
+        return a;
+      });
+      renderResults(items);
+    }
+
+    function open() {
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      input.focus();
+    }
+    function close() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      input.value = '';
+      clearCurrent();
+    }
+
+    openBtns.forEach((b) => b.addEventListener('click', open));
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) close();
+      if (!overlay.classList.contains('open')) return;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!current.length) return;
+        curIdx = e.key === 'ArrowDown'
+          ? Math.min(curIdx + 1, current.length - 1)
+          : Math.max(curIdx - 1, 0);
+        clearCurrent();
+        current[curIdx].classList.add('cur');
+        current[curIdx].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter' && curIdx >= 0 && current[curIdx]) {
+        (current[curIdx] as HTMLAnchorElement).click();
+      }
+    });
+    input.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => doSearch(input.value), 200);
+    });
+  </script>
+</body>
+</html>

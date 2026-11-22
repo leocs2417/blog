@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+import { sortPosts, tagFromSlug, tagSlug, TAG_SLUGS, BASE } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const all = await getCollection('posts');
+  const tags = new Set<string>();
+  for (const p of all) for (const t of p.data.tags) tags.add(t);
+  return [...tags].map((tag) => ({ params: { tag: TAG_SLUGS[tag] ?? encodeURIComponent(tag) } }));
+}
+
+const { tag } = Astro.params;
+const tagName = tagFromSlug(tag!) ?? decodeURIComponent(tag!);
+const all = sortPosts(await getCollection('posts'));
+const posts = all.filter((p) => p.data.tags.includes(tagName));
+---
+<BaseLayout title={`标签：${tagName} — Leo Chen`} active="tags">
+  <main class="wrap">
+    <div class="page-head">
+      <h1>{tagName}<span class="dot">.</span></h1>
+      <p>该标签下共 {posts.length} 篇文章 · <a href={`${BASE}tags/`} style="color:var(--accent)">← 返回全部标签</a></p>
+    </div>
+
+    <div class="tag-cloud">
+      {[...new Set(all.flatMap((p) => p.data.tags))].map((t) => {
+        const active = t === tagName;
+        return (
+          <a class="chip" href={`${BASE}tags/${tagSlug(t)}/`}
+             style={active ? 'border-color:var(--accent); color:var(--accent); background:rgba(37,99,235,.08)' : ''}>
+            {t}&nbsp;<b>{all.filter((p) => p.data.tags.includes(t)).length}</b>
+          </a>
+        );
+      })}
+    </div>
+
+    <div class="section-title">标签文章 / {tagName}</div>
+    <PostList posts={posts} />
+  </main>
+</BaseLayout>

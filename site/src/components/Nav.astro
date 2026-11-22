@@ -1,0 +1,24 @@
+---
+const { active } = Astro.props;
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+const links = [
+  { href: `${B}/`, label: '文章', key: 'home' },
+  { href: `${B}/tags/`, label: '标签', key: 'tags' },
+  { href: `${B}/about/`, label: '关于', key: 'about' },
+];
+---
+<nav>
+  <div class="wrap">
+    <a class="logo" href={`${B}/`}>Leo<span>·</span>Chen</a>
+    <div class="nav-right">
+      <div class="nav-links">
+        {links.map((l) => (
+          <a href={l.href} class={active === l.key ? 'active' : ''} aria-current={active === l.key ? 'page' : undefined}>{l.label}</a>
+        ))}
+      </div>
+      <button class="search-btn" aria-label="搜索" title="搜索" data-search-open>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>

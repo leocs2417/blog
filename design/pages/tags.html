@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>标签 — Leo Chen</title>
+<link rel="stylesheet" href="../mockup.css">
+<style>
+.pager{display:flex; align-items:center; justify-content:center; gap:10px; padding:36px 0 0}
+.pager button{min-width:40px; height:40px; padding:0 14px; border-radius:999px; border:1px solid var(--border);
+  background:var(--card); color:var(--fg); font-size:14px; font-family:inherit; cursor:pointer;
+  transition:all .2s; display:inline-flex; align-items:center; justify-content:center}
+.pager button:hover:not(:disabled){border-color:var(--accent); color:var(--accent)}
+.pager button.cur{background:var(--accent); border-color:var(--accent); color:var(--accent-fg)}
+.pager button:disabled{opacity:.4; cursor:not-allowed}
+.pager .info{font-size:13px; color:var(--muted); margin:0 8px}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="#">Leo<span>·</span>Chen</a>
+  <div class="nav-right">
+    <div class="nav-links"><a href="#">文章</a><a href="#" class="active">标签</a><a href="#">关于</a></div>
+    <button class="search-btn" aria-label="搜索" title="搜索">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </button>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <div class="page-head">
+    <h1 id="title">标签<span class="dot">.</span></h1>
+    <p id="sub">共 17 篇文章 · 11 个标签 · 点击标签可筛选</p>
+  </div>
+
+  <div class="cloud" style="display:flex; gap:12px; flex-wrap:wrap; padding-bottom:48px" id="cloud">
+    <button class="chip" data-tag="JS">JS <b>5</b></button>
+    <button class="chip" data-tag="Vue">Vue <b>3</b></button>
+    <button class="chip" data-tag="React">React <b>2</b></button>
+    <button class="chip" data-tag="浏览器">浏览器 <b>3</b></button>
+    <button class="chip" data-tag="性能优化">性能优化 <b>2</b></button>
+    <button class="chip" data-tag="ES6">ES6 <b>1</b></button>
+    <button class="chip" data-tag="源码">源码 <b>1</b></button>
+    <button class="chip" data-tag="Node.js">Node.js <b>1</b></button>
+    <button class="chip" data-tag="Linux">Linux <b>1</b></button>
+    <button class="chip" data-tag="IDE">IDE <b>1</b></button>
+    <button class="chip" data-tag="包管理">包管理 <b>1</b></button>
+  </div>
+
+  <div class="section-title" id="list-title">全部文章 / All Posts</div>
+  <section id="list"></section>
+
+  <div class="pager" id="pager">
+    <button id="prev" aria-label="上一页">←</button>
+    <span class="info" id="page-info">第 1 / 2 页</span>
+    <button id="next" aria-label="下一页">→</button>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <span>© 2017 – 2026 Leo Chen · 辽ICP备17015710号</span>
+  <span><a href="#" style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:14px;height:14px"><path d="M12 .5C5.7.5.6 5.6.6 11.9c0 5 3.3 9.3 7.8 10.8.6.1.8-.2.8-.5v-2c-3.2.7-3.8-1.4-3.8-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.5 4.6-1.5 7.8-5.8 7.8-10.8C23.4 5.6 18.3.5 12 .5z"/></svg>GitHub</a></span>
+</div></footer>
+
+<script>
+const posts = [
+  {t:'如何高性能渲染长列表?', d:'长列表渲染是前端性能优化的经典问题。本文从浏览器渲染原理出发，分析虚拟列表的核心思路与落地细节。', tags:['React','性能优化']},
+  {t:'React Virtual DOM', d:'Virtual DOM 是 React 性能设计的基石。本文梳理其结构、Diff 策略，以及与 Fiber 架构的配合。', tags:['React']},
+  {t:'Object.create 和 {} 的区别', d:'两者都能创建对象，但原型链的处理完全不同。通过几个例子讲清原型指定行为与隐式原型差异。', tags:['JS']},
+  {t:'Vue 中，nextTick 的实现原理', d:'Vue 的异步更新队列依赖 nextTick。结合事件循环机制，从源码角度拆解降级策略与使用场景。', tags:['Vue','源码']},
+  {t:'如何优化 Web 移动端的加载速度?', d:'移动端网络环境复杂，加载优化涉及资源、渲染、缓存多个层面。总结一套实用清单与度量方法。', tags:['JS','性能优化']},
+  {t:'exports 和 module.exports 的区别', d:'CommonJS 规范中两者既有联系又有区别，理解引用关系能避免导出失效的问题。', tags:['JS']},
+  {t:'为什么 const 在 for...in 循环中起作用，而普通 for 循环中不起作用', d:'从块级作用域与每次迭代的绑定机制入手，解释两种循环中 const 行为差异的根本原因。', tags:['JS','ES6']},
+  {t:'Vue 中，v-if 和 v-show 的区别', d:'一个是真正的条件渲染，一个只是切换 display。从渲染成本与切换成本两个维度分析如何选择。', tags:['Vue']},
+  {t:'Vue 中，计算属性 vs 方法 vs 侦听属性', d:'三者都能响应数据变化，但缓存机制与适用场景不同。通过对比实验讲清如何选择。', tags:['Vue']},
+  {t:'package.json 中 dependencies 和 devDependencies 的区别', d:'生产依赖与开发依赖的安装行为、部署影响与常见误区。', tags:['包管理']},
+  {t:'浏览器中 console.log() 出现 value below was evaluated just now 的情况', d:'为什么打印对象时显示的值和展开后不一样？与 Chrome DevTools 的求值时机有关。', tags:['浏览器']},
+  {t:'浏览器的工作原理及 JS 的运行机制', d:'从渲染流水线到事件循环，梳理浏览器如何解析、渲染页面并执行 JavaScript。', tags:['浏览器']},
+  {t:'防抖与节流的简单实现', d:'两个经典的高频触发优化手段，附手写实现与典型应用场景对比。', tags:['JS']},
+  {t:'新版 Sublime Text3 的 Package Control 打不开的问题', d:'安装 Package Control 失败的排查记录与解决方法。', tags:['IDE']},
+  {t:'SSH 设置无密码和使用别名登录 Linux 服务器', d:'使用密钥免密登录，并通过 ssh config 配置主机别名提升效率。', tags:['Linux']},
+  {t:'使用 Node.js Sequelize 操作 CentOS 远程服务器的 Mysql', d:'Sequelize 连接远程 MySQL 的配置要点、常见连接错误与解决过程。', tags:['Node.js']},
+  {t:'单点登录(SSO)', d:'一次登录、处处访问。梳理 SSO 的核心流程与常见实现方式。', tags:['浏览器']},
+];
+const PER_PAGE = 8;
+const params = new URLSearchParams(location.search);
+const tag = params.get('tag');
+const pageNum = Math.max(1, parseInt(params.get('page') || '1', 10));
+
+const $list = document.getElementById('list');
+const $title = document.getElementById('title');
+const $sub = document.getElementById('sub');
+const $listTitle = document.getElementById('list-title');
+const $pager = document.getElementById('pager');
+const $cloud = document.getElementById('cloud');
+
+function render() {
+  // active pill bound to URL param
+  $cloud.querySelectorAll('.chip').forEach(btn => {
+    const active = tag && btn.dataset.tag === tag;
+    btn.style.borderColor = active ? 'var(--accent)' : '';
+    btn.style.color = active ? 'var(--accent)' : '';
+    btn.style.background = active ? 'rgba(37,99,235,.08)' : '';
+  });
+
+  const filtered = tag ? posts.filter(p => p.tags.includes(tag)) : posts;
+  $title.innerHTML = tag ? tag + '<span class="dot">.</span>' : '标签<span class="dot">.</span>';
+  $sub.innerHTML = tag
+    ? '该标签下共 ' + filtered.length + ' 篇文章 · <a href="tags.html" style="color:var(--accent)">清除筛选</a>'
+    : '共 17 篇文章 · 11 个标签 · 点击标签可筛选';
+  $listTitle.textContent = tag ? ('标签文章 / ' + tag) : '全部文章 / All Posts';
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const page = tag ? 1 : Math.min(pageNum, pageCount);
+  const slice = filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
+
+  $list.innerHTML = slice.map((p, i) => `
+    <a class="post" href="post.html">
+      <span class="idx" aria-hidden="true">${String((page-1)*PER_PAGE+i+1).padStart(2,'0')}</span>
+      <div class="body"><h2>${p.t}</h2><p>${p.d}</p>
+      <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
+    </a>`).join('');
+
+  if (tag || filtered.length <= PER_PAGE) { $pager.style.display = 'none'; }
+  else {
+    $pager.style.display = '';
+    document.getElementById('page-info').textContent = `第 ${page} / ${pageCount} 页`;
+    document.getElementById('prev').disabled = page <= 1;
+    document.getElementById('next').disabled = page >= pageCount;
+  }
+}
+
+window.addEventListener('popstate', () => { location.reload(); });
+
+$cloud.addEventListener('click', e => {
+  const btn = e.target.closest('.chip');
+  if (!btn) return;
+  const t = btn.dataset.tag;
+  const isCur = tag && t === tag;
+  location.href = 'tags.html' + (isCur ? '' : '?tag=' + encodeURIComponent(t));
+});
+document.getElementById('prev').onclick = () => location.href = 'tags.html?page=' + (pageNum-1);
+document.getElementById('next').onclick = () => location.href = 'tags.html?page=' + (pageNum+1);
+
+render();
+</script>
+</body>
+</html>

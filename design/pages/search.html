@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>搜索 — Leo Chen</title>
+<link rel="stylesheet" href="../mockup.css">
+<style>
+.overlay{position:fixed; inset:0; background:rgba(9,9,11,.45); z-index:100;
+  display:flex; align-items:flex-start; justify-content:center; padding:10vh 24px 24px}
+.modal{width:100%; max-width:560px; background:var(--card); border:1px solid var(--border);
+  border-radius:16px; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,.25)}
+.search-row{display:flex; align-items:center; gap:12px; padding:16px 20px;
+  border-bottom:1px solid var(--border)}
+.search-row svg{width:18px; height:18px; color:var(--muted); flex-shrink:0}
+.search-row input{flex:1; border:none; outline:none; background:transparent;
+  font-family:inherit; font-size:16px; color:var(--fg)}
+.search-row input::placeholder{color:#94a3b8}
+.search-row kbd{font-family:"Space Grotesk",monospace; font-size:11px; color:var(--muted);
+  border:1px solid var(--border); border-radius:5px; padding:2px 7px; background:var(--bg)}
+.results{max-height:380px; overflow-y:auto}
+.result{display:block; padding:14px 20px; cursor:pointer; border-bottom:1px solid var(--border);
+  transition:background .15s}
+.result:last-child{border-bottom:none}
+.result:hover,.result.cur{background:rgba(37,99,235,.05)}
+.result .r-title{font-size:15px; font-weight:600}
+.result .r-title mark{background:rgba(37,99,235,.15); color:var(--accent); padding:0 3px; border-radius:3px}
+.result .r-snip{font-size:13px; color:var(--muted); margin-top:4px}
+.result .r-snip mark{background:rgba(37,99,235,.15); color:var(--accent); padding:0 3px; border-radius:3px}
+.hint{padding:12px 20px; font-size:12px; color:var(--muted); border-top:1px solid var(--border);
+  display:flex; gap:16px}
+.hint kbd{font-family:"Space Grotesk",monospace; font-size:11px; border:1px solid var(--border);
+  border-radius:4px; padding:1px 6px; background:var(--bg); margin-right:4px}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="#">Leo<span>·</span>Chen</a>
+  <div class="nav-right">
+    <div class="nav-links"><a href="#">文章</a><a href="#">标签</a><a href="#">关于</a></div>
+    <button class="search-btn" aria-label="搜索" title="搜索" style="color:var(--accent); background:rgba(37,99,235,.08)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </button>
+  </div>
+</div></nav>
+
+<div class="overlay">
+  <div class="modal" role="dialog" aria-label="站内搜索">
+    <div class="search-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" placeholder="搜索文章…" value="nextTick" aria-label="搜索文章">
+      <kbd>ESC</kbd>
+    </div>
+    <div class="results">
+      <a class="result cur" href="#">
+        <div class="r-title">Vue 中，<mark>nextTick</mark> 的实现原理</div>
+        <div class="r-snip">Vue 的异步更新队列依赖 <mark>nextTick</mark>。当你修改数据后立刻去读 DOM，往往拿到的是更新前的内容…</div>
+      </a>
+      <a class="result" href="#">
+        <div class="r-title">Vue 中的 <mark>nextTick</mark> 与事件循环</div>
+        <div class="r-snip">从宏任务与微任务的执行顺序入手，理解 Vue 异步更新队列的调度时机…</div>
+      </a>
+      <a class="result" href="#">
+        <div class="r-title">浏览器的工作原理及 JS 的运行机制</div>
+        <div class="r-snip">微任务队列在每次事件循环 tick 结束时统一执行，这正是 <mark>nextTick</mark> 选择的时机…</div>
+      </a>
+    </div>
+    <div class="hint">
+      <span><kbd>↑↓</kbd>切换结果</span>
+      <span><kbd>↵</kbd>打开文章</span>
+      <span><kbd>ESC</kbd>关闭</span>
+    </div>
+  </div>
+</div>
+
+<footer><div class="wrap">
+  <span>© 2017 – 2026 Leo Chen · 辽ICP备17015710号</span>
+  <span><a href="#" style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:14px;height:14px"><path d="M12 .5C5.7.5.6 5.6.6 11.9c0 5 3.3 9.3 7.8 10.8.6.1.8-.2.8-.5v-2c-3.2.7-3.8-1.4-3.8-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.5 4.6-1.5 7.8-5.8 7.8-10.8C23.4 5.6 18.3.5 12 .5z"/></svg>GitHub</a></span>
+</div></footer>
+</body>
+</html>

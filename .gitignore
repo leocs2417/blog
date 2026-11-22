@@ -8,3 +8,8 @@ public/
 
 themes/next/node_modules/
 themes/yilia/node_modules/
+# Astro site
+site/node_modules/
+site/dist/
+site/test-results/
+site/.astro/

@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+import { sortPosts, tagSlug, TAG_SLUGS, BASE } from '../../lib/utils';
+
+const PER_PAGE = 8;
+const all = sortPosts(await getCollection('posts'));
+const pageCount = Math.ceil(all.length / PER_PAGE);
+const posts = all.slice(0, PER_PAGE);
+
+const tagCounts = new Map<string, number>();
+for (const p of all) for (const t of p.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+---
+<BaseLayout title="标签 — Leo Chen" active="tags">
+  <main class="wrap">
+    <div class="page-head">
+      <h1>标签<span class="dot">.</span></h1>
+      <p>共 {all.length} 篇文章 · {tags.length} 个标签 · 点击标签可筛选</p>
+    </div>
+
+    <div class="tag-cloud">
+      {tags.map(([tag, count]) => (
+        <a class="chip" href={`${BASE}tags/${tagSlug(tag)}/`}>{tag}&nbsp;<b>{count}</b></a>
+      ))}
+    </div>
+
+    <div class="section-title">全部文章 / All Posts</div>
+    <PostList posts={posts} />
+
+    {pageCount > 1 && (
+      <div class="pager">
+        <button disabled aria-label="上一页">←</button>
+        <span class="info">第 1 / {pageCount} 页</span>
+        <a href={`${BASE}tags/page/2/`} aria-label="下一页" style="min-width:40px; height:40px; padding:0 14px; border-radius:999px; border:1px solid var(--border); background:var(--card); font-size:14px; display:inline-flex; align-items:center; justify-content:center">→</a>
+      </div>
+    )}
+  </main>
+</BaseLayout>
