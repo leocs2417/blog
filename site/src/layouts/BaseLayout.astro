@@ -67,12 +67,15 @@ const B = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     function clearCurrent() {
       current.forEach((el) => el.classList.remove('cur'));
-      curIdx = -1;
     }
 
     function renderResults(items: HTMLElement[]) {
       resultsEl.replaceChildren(...items);
       current = Array.from(resultsEl.querySelectorAll('.result'));
+      if (current.length) {
+        curIdx = 0;
+        current[0].classList.add('cur');
+      }
     }
 
     async function doSearch(q: string) {
@@ -113,6 +116,8 @@ const B = import.meta.env.BASE_URL.replace(/\/$/, '');
       document.body.style.overflow = '';
       input.value = '';
       clearCurrent();
+      current = [];
+      curIdx = -1;
     }
 
     openBtns.forEach((b) => b.addEventListener('click', open));

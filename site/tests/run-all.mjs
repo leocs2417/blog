@@ -48,7 +48,12 @@ function normMd(md) {
 // ---------- T-B: build outputs ----------
 check('T-B02 pages exist', report.every(r => fs.existsSync(path.join(DIST, `posts/${r.slug}/index.html`))),
   `${report.length} posts`);
-check('T-B06 pagefind index', fs.existsSync(path.join(DIST, 'pagefind/pagefind-entry.json')));
+{
+  const entry = JSON.parse(fs.readFileSync(path.join(DIST, 'pagefind/pagefind-entry.json'), 'utf8'));
+  const pageCount = Object.values(entry.languages || {}).reduce((n, l) => n + (l.page_count || 0), 0);
+  check('T-B06 pagefind index', fs.existsSync(path.join(DIST, 'pagefind/pagefind-entry.json')) && pageCount === report.length,
+    `${pageCount}/${report.length} pages`);
+}
 
 // ---------- T-C: content per post ----------
 for (const { file, slug } of report) {
@@ -63,7 +68,7 @@ for (const { file, slug } of report) {
   const html = readHtml(path.join(DIST, `posts/${slug}/index.html`));
   const h1 = decodeEntities(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? '').trim();
   check(`T-C01 ${slug} title`, h1 === srcTitle, h1);
-  const contentHtml = html.match(/<div class="content">([\s\S]*?)<div class="post-footer">/)?.[1] ?? '';
+  const contentHtml = html.match(/<div class="content"[^>]*>([\s\S]*?)<div class="post-footer">/)?.[1] ?? '';
   const h2Count = (contentHtml.match(/<h2/g) || []).length;
   check(`T-C02 ${slug} h2 count`, h2Count === srcH2, `rendered=${h2Count} src=${srcH2}`);
   const preCount = (contentHtml.match(/<pre/g) || []).length;
@@ -71,6 +76,11 @@ for (const { file, slug } of report) {
   check(`T-C03 ${slug} no fence leak`, !backtickLeak);
   check(`T-C03 ${slug} html escapes sane`, !/&amp;(lt|gt|amp);/.test(contentHtml), '');
   check(`T-C03 ${slug} pre covers fences`, preCount >= srcPre, `pre=${preCount} fences=${srcPre}`);
+  const suspiciousListInPre = [...contentHtml.matchAll(/<pre[\s\S]*?<\/pre>/g)]
+    .map(m => m[0].replace(/<[^>]+>/g, '').trim())
+    .filter(text => /^[-*+]\s|^\d+[.)]\s|^ {2,}[-*+]\s/m.test(text));
+  check(`T-C03 ${slug} no list rendered as code`, suspiciousListInPre.length === 0,
+    suspiciousListInPre.slice(0, 2).map(x => x.slice(0, 60)).join(' | '));
   const renderedNorm = decodeEntities(stripTags(contentHtml)).replace(/\s+/g, ' ').trim();
   const flat = (x) => x.replace(/\s+/g, '').replace(/\\\*/g, '*').replace(/-/g, '');
   const renderedFlat = flat(renderedNorm).replace(/\*\*/g, '').replace(/\\/g, '');
@@ -197,7 +207,22 @@ try {
     await page.type('#search-input', '防抖');
     await new Promise(r => setTimeout(r, 1200));
     const text = await page.evaluate(() => document.getElementById('search-results').textContent);
-    check('T-P05 search results', text.includes('防抖'), text.slice(0, 60));
+    const firstTitle = await page.evaluate(() => document.querySelector('#search-results .result .r-title')?.textContent.trim() || '');
+    check('T-P05 search results', text.includes('防抖') && firstTitle.includes('防抖'), firstTitle || text.slice(0, 60));
+    const firstHref = await page.evaluate(() => document.querySelector('#search-results .result')?.getAttribute('href') || '');
+    const currentCount = await page.evaluate(() => document.querySelectorAll('#search-results .result.cur').length);
+    check('T-P05 search first result selected', currentCount === 1 && firstHref.includes('/posts/debounce-and-throttle/'), `${currentCount} selected; ${firstHref}`);
+    await page.keyboard.press('ArrowDown');
+    await new Promise(r => setTimeout(r, 100));
+    const activeAfterDown = await page.evaluate(() => [...document.querySelectorAll('#search-results .result')].findIndex(a => a.classList.contains('cur')));
+    check('T-P05 search ArrowDown selects next result', activeAfterDown === 1, `active=${activeAfterDown}`);
+    await page.keyboard.press('ArrowUp');
+    await new Promise(r => setTimeout(r, 100));
+    const activeAfterUp = await page.evaluate(() => [...document.querySelectorAll('#search-results .result')].findIndex(a => a.classList.contains('cur')));
+    check('T-P05 search ArrowUp selects first result', activeAfterUp === 0, `active=${activeAfterUp}`);
+    await page.keyboard.press('Enter');
+    await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 8000 }).catch(() => {});
+    check('T-P05 search Enter opens first result', page.url().includes('/posts/debounce-and-throttle/'), page.url());
     await page.screenshot({ path: path.join(OUT, 'search-modal.png') });
     await page.close();
   }

@@ -175,26 +175,24 @@ render() {
 
 3. without keys VS with keys
 
-  ![keys](/blog/assets/image/reactKeys.jpg)
+    ![keys](/blog/assets/image/reactKeys.jpg)
 
-  场景：
+    场景：
+
     - 假设有一个数组，包含五个数据，页面第一次渲染时，会把这五个数据映射成五个虚拟DOM节点，生成虚拟DOM树，如图左。
-
     - 接着添加一个新的内容，数据发生变化，生成新的虚拟DOM树。
-
     - 接着对前后2个虚拟DOM进行对比，如果每一个节点，都没有一个自己的key值，节点和节点之间的关系就很难被对应上，所以需要两层循环比较。
-  
-  改善：
+
+    改善：
+
     - 如图右侧，给每个节点增加一个key，这样在比对的时候，就可以轻松发现一一对应的关系，只有`z`不同，这个时候，快速建立起关联后，只把`z`加进去即可。
 
-  注：why no index as key in loop?
+    注：why no index as key in loop?
 
     - 若key值为index，在新的虚拟DOM树上，没办法保证前后key值一致。
-
-    举例说明：再看一下`todolist` demo:
+    - 举例说明：再看一下`todolist` demo:
       - a:0 b: 1 c: 2  -> 删除a，重新渲染
-
       - b: 0 c: 1 -> 前后index值不一样，故失去了快速比对的条件。
-  
+
 写在最后：
 Keys should be stable, predictable, and unique.Unstable keys (like those produced by Math.random() will cause many component instances and DOM nodes to be unnecessarily recreated, which can cause performance degradation and lost state in child components.
