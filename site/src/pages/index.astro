@@ -7,15 +7,14 @@ import { sortPosts, BASE } from '../lib/utils';
 const posts = sortPosts(await getCollection('posts')).slice(0, 8);
 const total = sortPosts(await getCollection('posts')).length;
 ---
-<BaseLayout title="Leo Chen 的博客" active="home">
+<BaseLayout title="Leo Chen 的个人空间" active="home">
   <main>
     <header class="wrap" style="display:grid; grid-template-columns:1fr auto; gap:48px; align-items:center; padding:72px 24px 56px">
       <div>
-        <h1 style="font-family:var(--font-display); font-size:44px; font-weight:700; line-height:1.2; letter-spacing:-.5px">
-          你好，我是 Leo Chen<span class="dot" style="color:var(--accent)">.</span>
-        </h1>
-        <p style="margin-top:14px; color:var(--muted); font-size:17px; max-width:520px">
-          前端工程师 · 关注 Vue / React / 浏览器原理与性能优化。这里记录我在工程实践中的思考与踩坑笔记。
+        <h1 class="intro-title">Building with code, exploring with AI<span class="dot">.</span></h1>
+        <h2 class="intro-subtitle">你好，我是 Leo</h2>
+        <p class="intro-desc">
+          一名 8 年经验的软件工程师，曾专注于前端工程与复杂业务系统开发。近年来，将更多精力投入 AI Agent 领域，探索大语言模型、工具调用与业务系统的结合，尝试构建真正实用的智能应用。
         </p>
         <div class="social" style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap">
           <a class="chip" href="https://github.com/leocs2417" target="_blank" rel="noopener noreferrer">
@@ -34,11 +33,12 @@ const total = sortPosts(await getCollection('posts')).length;
     <section class="wrap" style="padding-bottom:64px">
       <div class="section-title">作品集 / Projects</div>
       <div style="display:grid; grid-template-columns:1fr; max-width:480px; gap:16px">
-        <a class="p-card" href={`${BASE}posts/high-performance-long-list/`}>
-          <span class="p-name">个人博客
+        <a class="p-card" href="http://82.157.148.18:8080/" target="_blank" rel="noopener noreferrer">
+          <span class="p-name">个人智能助手平台
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
           </span>
-          <span class="p-desc">基于 Astro 的静态博客，暗色模式 + 全文搜索</span>
+          <span class="p-tag">AI Agent · Self-hosted</span>
+          <span class="p-desc">面向个人场景的自托管 AI Agent 平台，将对话、任务与工具能力集中到统一入口，用于搭建可控的个人智能工作流。</span>
         </a>
       </div>
     </section>

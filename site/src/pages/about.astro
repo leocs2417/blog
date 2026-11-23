@@ -8,17 +8,73 @@ import { BASE } from '../lib/utils';
       <img class="avatar" src={`${BASE}assets/avatar.jpeg`} alt="Leo Chen 的头像" width="96" height="96" style="width:96px;height:96px">
       <div>
         <h1 style="font-family:var(--font-display); font-size:34px; font-weight:700; letter-spacing:-.5px">Leo Chen<span style="color:var(--accent)">.</span></h1>
-        <p style="margin-top:6px; color:var(--muted); font-size:15px">前端工程师 · 辽宁</p>
+        <p style="margin-top:6px; color:var(--muted); font-size:15px">Software Engineer · AI Agent / Dalian, China</p>
       </div>
     </div>
     <div style="padding:0 24px 64px">
       <h2 style="font-family:var(--font-display); font-size:20px; font-weight:700; margin:40px 0 16px">关于我</h2>
-      <p style="color:#1e293b; margin:12px 0">一名前端工程师，主要使用 Vue / React 做业务开发，对浏览器渲染原理、性能优化和工程化有持续的兴趣。这里记录我在实践中的思考与踩坑笔记，希望对遇到同样问题的人有帮助。</p>
+      <div class="about-intro">
+        <p>我是一名拥有 8 年经验的软件工程师，职业经历主要集中在前端工程与复杂业务系统开发，参与过区块链、SaaS、交易平台等不同领域的产品建设。</p>
+        <p>过去，我更关注如何通过合理的架构设计、工程规范与技术选型，构建稳定、易维护、可持续迭代的软件系统。</p>
+        <p>近年来，随着大语言模型和 AI Agent 技术的发展，我开始将更多精力投入智能体应用开发。从模型 API 接入、统一模型调用封装，到个人助理 Agent 的设计与实现，我持续探索如何将 LLM 能力与工具、数据及现有业务系统结合，让 AI 不只是回答问题，而是真正参与任务执行。</p>
+        <p>我始终相信，技术的价值不在于使用了多少新技术，而在于能否解决真实问题，并将想法可靠地交付。</p>
+        <p><strong>目前，我正专注于 AI Agent 应用开发，也期待参与更多有实际价值的 AI 产品与工程实践。</strong></p>
+      </div>
 
       <h2 style="font-family:var(--font-display); font-size:20px; font-weight:700; margin:40px 0 16px">技术方向</h2>
-      <div style="display:flex; gap:10px; flex-wrap:wrap">
-        <span class="tag">Vue</span><span class="tag">React</span><span class="tag">TypeScript</span>
-        <span class="tag">Node.js</span><span class="tag">性能优化</span><span class="tag">工程化</span>
+      <div class="skill-stack">
+        <article class="skill-card">
+          <header class="skill-head">
+            <h3 class="skill-title">01 / Software Engineering</h3>
+            <span class="skill-badge skill-badge-green">工程基础</span>
+          </header>
+          <p class="skill-desc">长期工作积累，具备实际项目经验。</p>
+          <div class="skill-tags">
+            <span>JavaScript</span>
+            <span>TypeScript</span>
+            <span>React</span>
+            <span>Vue</span>
+            <span>Next.js</span>
+            <span>HTML / CSS</span>
+            <span>前端工程化</span>
+            <span>组件设计</span>
+            <span>性能优化</span>
+          </div>
+        </article>
+        <article class="skill-card">
+          <header class="skill-head">
+            <h3 class="skill-title">02 / AI Agent Engineering</h3>
+            <span class="skill-badge skill-badge-green">当前实践方向</span>
+          </header>
+          <p class="skill-desc">正在重点投入，并通过个人项目持续积累实践经验。</p>
+          <div class="skill-tags">
+            <span>Python</span>
+            <span>LLM API</span>
+            <span>模型接入与抽象</span>
+            <span>Prompt Engineering</span>
+            <span>Agent 应用开发</span>
+            <span>会话管理</span>
+            <span>Memory 设计</span>
+            <span>模型 Provider</span>
+          </div>
+        </article>
+        <article class="skill-card">
+          <header class="skill-head">
+            <h3 class="skill-title">03 / Agent Ecosystem</h3>
+            <span class="skill-badge skill-badge-blue">持续探索</span>
+          </header>
+          <p class="skill-desc">关注 Agent 技术生态及其在真实业务中的应用。</p>
+          <div class="skill-tags">
+            <span>MCP</span>
+            <span>RAG</span>
+            <span>Function Calling</span>
+            <span>Agent Skills</span>
+            <span>LangGraph</span>
+            <span>Agent Evaluation</span>
+            <span>Multi-Agent</span>
+            <span>OpenTelemetry</span>
+          </div>
+        </article>
       </div>
 
       <h2 style="font-family:var(--font-display); font-size:20px; font-weight:700; margin:40px 0 16px">联系我</h2>
@@ -33,15 +89,6 @@ import { BASE } from '../lib/utils';
         </a>
       </div>
 
-      <h2 style="font-family:var(--font-display); font-size:20px; font-weight:700; margin:40px 0 16px">关于本站</h2>
-      <div class="p-card" style="margin-top:16px; cursor:default">
-        <ul style="list-style:none">
-          <li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border); font-size:14px"><span style="color:var(--muted)">框架</span><span>Astro</span></li>
-          <li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border); font-size:14px"><span style="color:var(--muted)">全文搜索</span><span>Pagefind</span></li>
-          <li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border); font-size:14px"><span style="color:var(--muted)">部署</span><span>GitHub Pages + 自有服务器</span></li>
-          <li style="display:flex; justify-content:space-between; padding:8px 0; font-size:14px"><span style="color:var(--muted)">开源</span><span>源码在 GitHub 上</span></li>
-        </ul>
-      </div>
     </div>
   </main>
 </BaseLayout>

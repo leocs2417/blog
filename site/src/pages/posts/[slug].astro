@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostToc from '../../components/PostToc.astro';
 import { getCollection, render } from 'astro:content';
 import { tagSlug, sortPosts, BASE } from '../../lib/utils';
 
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const all = sortPosts(await getCollection('posts'));
 const idx = all.findIndex((p) => p.data.slug === post.data.slug);
 const prev = idx > 0 ? all[idx - 1] : null;
@@ -21,33 +22,36 @@ const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
 <BaseLayout title={`${post.data.title} — Leo Chen`} description={post.data.description}>
   <main>
     <article class="article">
-      <div class="prose">
-        <h1 data-pagefind-meta="title">{post.data.title}</h1>
-        <div class="meta">
-          {post.data.tags.map((t) => (
-            <a class="tag" href={`${BASE}tags/${tagSlug(t)}/`}>{t}</a>
-          ))}
-        </div>
-        <div class="content" data-pagefind-body>
-          <Content />
-        </div>
-        <div class="post-footer">
-          <div class="pn">
-            {prev && (
-              <a href={`${BASE}posts/${prev.data.slug}/`}>
-                <div class="dir">← 上一篇</div>
-                <div class="t">{prev.data.title}</div>
-              </a>
-            )}
-            {next && (
-              <a href={`${BASE}posts/${next.data.slug}/`} class="next">
-                <div class="dir">下一篇 →</div>
-                <div class="t">{next.data.title}</div>
-              </a>
-            )}
+      <div class="article-layout">
+        <PostToc headings={headings} />
+        <div class="prose">
+          <h1 data-pagefind-meta="title">{post.data.title}</h1>
+          <div class="meta">
+            {post.data.tags.map((t) => (
+              <a class="tag" href={`${BASE}tags/${tagSlug(t)}/`}>{t}</a>
+            ))}
           </div>
-          <div style="margin-top:32px; text-align:center">
-            <a class="btn btn-ghost" href={`${BASE}tags/`}>← 返回全部文章</a>
+          <div class="content" data-pagefind-body>
+            <Content />
+          </div>
+          <div class="post-footer">
+            <div class="pn">
+              {prev && (
+                <a href={`${BASE}posts/${prev.data.slug}/`}>
+                  <div class="dir">← 上一篇</div>
+                  <div class="t">{prev.data.title}</div>
+                </a>
+              )}
+              {next && (
+                <a href={`${BASE}posts/${next.data.slug}/`} class="next">
+                  <div class="dir">下一篇 →</div>
+                  <div class="t">{next.data.title}</div>
+                </a>
+              )}
+            </div>
+            <div style="margin-top:32px; text-align:center">
+              <a class="btn btn-ghost" href={`${BASE}tags/`}>← 返回全部文章</a>
+            </div>
           </div>
         </div>
       </div>
