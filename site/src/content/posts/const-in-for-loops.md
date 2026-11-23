@@ -2,7 +2,7 @@
 title: "为什么const在'for...in'循环中起作用，而普通'for'循环中不起作用。"
 slug: "const-in-for-loops"
 date: "2019-06-22 21:00"
-tags: ["JS", "ES6"]
+tags: ["JS"]
 categories: ["JS"]
 description: "最近写代码，在调ESLint时，发现 const 在for...in循环中，和普通for循环中，有一些不同。 变量声明 在传统的 JavaScript 中（非ES6），我们使用的是 var 关键字来做变量声明。不过其定义的变量存在： 没有块"
 ---

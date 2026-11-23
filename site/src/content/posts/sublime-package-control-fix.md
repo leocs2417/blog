@@ -2,7 +2,7 @@
 title: "新版Sublime Text3的Package Control打不开的问题"
 slug: "sublime-package-control-fix"
 date: "2019-01-05 12:00"
-tags: ["IDE"]
+tags: ["IDE", "包管理"]
 categories: ["IDE"]
 description: "前一段时间电脑上的Sublime Text3 突然不太好用，索性就卸载重装了一个。 结果安装完后，准备安装需要用到的插件，结果发现 Package Control 打不开。试过很多次依然打不开。之前从来没有遇到过这个问题。 然后Google"
 ---

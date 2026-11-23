@@ -4,9 +4,7 @@ slug: "ai-agent-optimization-guide"
 date: "2026-11-23"
 tags:
   - AI
-  - Agent
-  - Evaluation
-  - Optimization
+  - 性能优化
 categories:
   - AI
 description: "围绕回答质量、RAG 检索、工具调用、上下文与记忆、执行稳定性、延迟和成本，建立一套基于 Trace 与 Evaluation 的 Agent 持续优化方法。"
@@ -597,4 +595,4 @@ Agent 调优不是一门只靠经验写 Prompt 的手艺，而是一套建立在
 - [MCP — Specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28)
 - [OpenTelemetry — GenAI Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/)
 
-> 参考资料访问时间：2026 年 11 月。部分平台和 API 可能处于版本演进或迁移阶段，实际采用前请核对官方文档、弃用计划和当前 SDK 支持情况。
+> 实际采用前请核对官方文档、弃用计划和当前 SDK 支持情况。

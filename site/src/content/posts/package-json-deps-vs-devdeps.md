@@ -2,7 +2,7 @@
 title: "package.json中dependencies和devDependencies的区别"
 slug: "package-json-deps-vs-devdeps"
 date: "2019-03-12 21:00"
-tags: ["Node.js"]
+tags: ["Node.js", "包管理"]
 categories: ["包管理"]
 description: "以前一直在纠结一个npm安装的包依赖管理的问题。是这样的： 我们在使用包管理器安装模块或插件的时候，有两种命令把他们写入到 package.json 文件里面去，他们是： / 或 1. dependencies: 依赖和附属的意思。 2. "
 ---

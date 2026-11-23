@@ -2,7 +2,7 @@
 title: "JS中函数的防抖(debounce)与节流(throttle)"
 slug: "debounce-and-throttle"
 date: "2019-09-12 21:00"
-tags: ["JS"]
+tags: ["JS", "性能优化"]
 categories: ["JS"]
 description: "在实际的用户交互过程中，无论是PC还是移动端，都会避免不了会用到 防抖 和 节流 来做相应的优化。 常见使用场景： 窗口resize,scroll,以及输入框中搜索请求数据等。 概念： 防抖：debounce。其概念就是 去抖动 ，基本思路"
 ---

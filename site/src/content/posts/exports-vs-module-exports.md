@@ -2,7 +2,7 @@
 title: "exports和module.exports的区别"
 slug: "exports-vs-module-exports"
 date: "2019-08-31 20:00"
-tags: ["JS"]
+tags: ["JS", "Node.js"]
 categories: ["JS"]
 description: "使用 require 时， exports 和 module.exports 的区别 1. require: 2. module 3. 实例 require 导出的内容是 module.exports 的指向的内存块内容，并不是 expor"
 ---
