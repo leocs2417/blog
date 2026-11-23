@@ -15,6 +15,12 @@ export const TAG_SLUGS: Record<string, string> = {
   '包管理': 'package-mgmt',
   'SSH': 'ssh',
   'Mysql': 'mysql',
+  'AI': 'ai',
+  'Agent': 'agent',
+  'Evaluation': 'evaluation',
+  'Optimization': 'optimization',
+  'Engineering': 'engineering',
+  'Best Practices': 'best-practices',
 };
 
 const SLUG_TO_TAG: Record<string, string> = Object.fromEntries(

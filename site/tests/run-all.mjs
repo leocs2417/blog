@@ -10,6 +10,9 @@ const DIST = path.join(SITE, 'dist');
 const OUT = path.join(SITE, 'test-results');
 const SRC_POSTS = path.join(ROOT, 'source/_posts');
 const report = JSON.parse(fs.readFileSync(path.join(SITE, 'scripts/migration-report.json'), 'utf8'));
+const contentPostSlugs = fs.readdirSync(path.join(SITE, 'src/content/posts'))
+  .filter(f => f.endsWith('.md'))
+  .map(f => f.replace(/\.md$/, ''));
 
 const results = [];
 function check(id, ok, detail = '') {
@@ -46,13 +49,13 @@ function normMd(md) {
 
 
 // ---------- T-B: build outputs ----------
-check('T-B02 pages exist', report.every(r => fs.existsSync(path.join(DIST, `posts/${r.slug}/index.html`))),
-  `${report.length} posts`);
+check('T-B02 pages exist', contentPostSlugs.every(slug => fs.existsSync(path.join(DIST, `posts/${slug}/index.html`))),
+  `${contentPostSlugs.length} posts (${report.length} migrated)`);
 {
   const entry = JSON.parse(fs.readFileSync(path.join(DIST, 'pagefind/pagefind-entry.json'), 'utf8'));
   const pageCount = Object.values(entry.languages || {}).reduce((n, l) => n + (l.page_count || 0), 0);
-  check('T-B06 pagefind index', fs.existsSync(path.join(DIST, 'pagefind/pagefind-entry.json')) && pageCount === report.length,
-    `${pageCount}/${report.length} pages`);
+  check('T-B06 pagefind index', fs.existsSync(path.join(DIST, 'pagefind/pagefind-entry.json')) && pageCount === contentPostSlugs.length,
+    `${pageCount}/${contentPostSlugs.length} pages`);
 }
 
 // ---------- T-C: content per post ----------

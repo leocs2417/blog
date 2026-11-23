@@ -12,7 +12,7 @@
 | T-B03 | frontmatter 完整性 | 每篇含 title/slug/tags/date，date 仅用于排序不输出到 DOM |
 | T-B04 | 内链完整性 | 全站 HTML 中内部链接（含 base 前缀）无 404（脚本抓取校验） |
 | T-B05 | 图片完整性 | 所有 `<img>` src 可解析、文件存在，含 `alt` |
-| T-B06 | 搜索索引 | `pagefind` 运行成功，仅索引 17 个文章页，`pagefind/pagefind-entry.json` 的 `page_count=17`，抽样词可命中 |
+| T-B06 | 搜索索引 | `pagefind` 运行成功，仅索引当前全部文章页（17 篇迁移文章 + 新增文章），`pagefind/pagefind-entry.json` 的 `page_count` 与内容目录一致，抽样词可命中 |
 | T-B07 | 旧链接跳转页 | §4 每个旧路径存在 index.html 且含 meta-refresh 指向新 slug |
 
 ## 2. 内容解析测试（T-Content，逐篇）

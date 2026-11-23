@@ -101,8 +101,18 @@
 | 导航 active / 无归档 / 无 RSS / GitHub logo | ✅ |
 | 标签默认列表分页 / 筛选态高亮 / URL 绑定 | ✅ |
 | 文章页标签 → 标签页并高亮 | ✅ |
-| 全部 17 篇文章内容、图片、代码块、上一篇/下一篇 | ✅ |
+| 全部 17 篇迁移文章内容、图片、代码块、上一篇/下一篇 | ✅ |
 | 搜索打开/命中/高亮/首条选中/↑↓/↵/ESC | ✅ |
 | 375 / 768 / 1440 无横向滚动 | ✅ |
 | 404 / 关于 / 旧链接跳转 | ✅ |
 | 构建 + 一键测试 | ✅ |
+
+### 新增文章补充验收（2026-11-23）
+
+| 范围 | 结果 |
+|---|---|
+| `ai-agent-optimization-guide` | ✅ |
+| `ai-agent-engineering-best-practices` | ✅ |
+| 新增 AI / Agent / Evaluation / Optimization / Engineering / Best Practices 标签与筛选页 | ✅ |
+| Pagefind 索引更新至 19/19 篇文章页 | ✅ |
+| 构建 + 自动化测试 205/205 | ✅ |
