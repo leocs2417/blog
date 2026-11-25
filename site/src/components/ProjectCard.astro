@@ -1,0 +1,100 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  description: string;
+  links: {
+    label: string;
+    href?: string;
+    primary?: boolean;
+    requiresLogin?: boolean;
+  }[];
+}
+
+const { title, subtitle, description, links } = Astro.props;
+---
+<article class="p-card">
+  <h3 class="p-name">{title}</h3>
+  <span class="p-tag">{subtitle}</span>
+  <p class="p-desc">{description}</p>
+
+  <div class="p-actions">
+    {links.map(({ label, href, primary, requiresLogin }) => {
+      const Tag = href ? 'a' : 'span';
+
+      return (
+        <Tag
+          class:list={['p-action', { primary }]}
+          href={href}
+          target={href ? '_blank' : undefined}
+          rel={href ? 'noopener noreferrer' : undefined}
+          aria-disabled={href ? undefined : 'true'}
+        >
+          {requiresLogin && (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="5" y="10" width="14" height="11" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" />
+            </svg>
+          )}
+          <span>{label}</span>
+          {requiresLogin && <span class="sr-only">（需要登录）</span>}
+          {!href && <span class="sr-only">（待上线）</span>}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 17 17 7M7 7h10v10" />
+          </svg>
+        </Tag>
+      );
+    })}
+  </div>
+</article>
+
+<style>
+  .p-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 18px;
+    margin-top: 6px;
+  }
+
+  .p-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 44px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .p-action.primary,
+  a.p-action:hover {
+    color: var(--accent);
+  }
+
+  .p-action.primary {
+    font-weight: 600;
+  }
+
+  a.p-action:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .p-action[aria-disabled="true"] {
+    opacity: .7;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .p-action svg {
+    width: 14px;
+    height: 14px;
+    flex: none;
+  }
+</style>

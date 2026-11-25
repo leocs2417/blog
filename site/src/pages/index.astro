@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostList from '../components/PostList.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import { sortPosts, BASE } from '../lib/utils';
 
@@ -31,15 +32,17 @@ const total = sortPosts(await getCollection('posts')).length;
     </header>
 
     <section class="wrap" style="padding-bottom:64px">
-      <div class="section-title">作品集 / Projects</div>
+      <h2 class="section-title">作品集 / Projects</h2>
       <div style="display:grid; grid-template-columns:1fr; max-width:480px; gap:16px">
-        <a class="p-card" href="http://82.157.148.18:8080/" target="_blank" rel="noopener noreferrer">
-          <span class="p-name">个人智能助手平台
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
-          </span>
-          <span class="p-tag">AI Agent · Self-hosted</span>
-          <span class="p-desc">面向个人场景的自托管 AI Agent 平台，将对话、任务与工具能力集中到统一入口，用于搭建可控的个人智能工作流。</span>
-        </a>
+        <ProjectCard
+          title="个人智能助手平台"
+          subtitle="AI Agent · Self-hosted"
+          description="面向个人场景的自托管 AI Agent 平台，将对话、任务与工具能力集中到统一入口，用于搭建可控的个人智能工作流。"
+          links={[
+            { label: '交互演示', href: 'http://82.157.148.18:8082', primary: true },
+            { label: '正式应用', href: 'http://82.157.148.18:8080', requiresLogin: true },
+          ]}
+        />
       </div>
     </section>
 

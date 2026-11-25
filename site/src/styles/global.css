@@ -153,12 +153,10 @@ footer a svg{width:14px; height:14px}
 
 /* Portfolio card */
 .p-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-  padding:20px 22px; transition:all .25s; cursor:pointer; display:flex; flex-direction:column; gap:6px}
-.p-card:hover{border-color:var(--accent); transform:translateY(-3px);
+  padding:20px 22px; transition:all .25s; display:flex; flex-direction:column; gap:6px}
+.p-card:hover,.p-card:focus-within{border-color:var(--accent); transform:translateY(-3px);
   box-shadow:0 12px 32px rgba(37,99,235,.10)}
-.p-card .p-name{font-weight:600; font-size:15px; display:flex; align-items:center; justify-content:space-between}
-.p-card .p-name svg{width:16px; height:16px; color:var(--muted); transition:all .25s}
-.p-card:hover .p-name svg{color:var(--accent); transform:translate(2px,-2px)}
+.p-card .p-name{font-weight:600; font-size:15px}
 .p-card .p-tag{font-size:11px; letter-spacing:.4px; color:var(--accent)}
 .p-card .p-desc{font-size:13px; color:var(--muted)}
 
