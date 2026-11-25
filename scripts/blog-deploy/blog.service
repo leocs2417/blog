@@ -1,0 +1,15 @@
+[Unit]
+Description=Static blog on port 8089
+After=network.target
+
+[Service]
+User=www-data
+ExecStart=/usr/bin/python3 -m http.server 8089 --bind 0.0.0.0 --directory /srv/blog/current
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
