@@ -2,25 +2,21 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const ROOT = '/Users/leo/Desktop/blog';
-const DIST = path.join(ROOT, 'site/dist');
-const report = JSON.parse(fs.readFileSync(path.join(ROOT, 'site/scripts/migration-report.json'), 'utf8'));
+const SITE = path.resolve(import.meta.dirname, '..');
+const DIST = path.join(SITE, 'dist');
+const report = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, 'migration-report.json'), 'utf8'));
 
-function oldDir(file) {
-  // frontmatter date from migrated file
-  const slug = report.find((r) => r.file === file).slug;
-  const md = fs.readFileSync(path.join(ROOT, 'site/src/content/posts', `${slug}.md`), 'utf8');
-  const date = md.match(/^date:\s*"([^"]+)"/m)?.[1];
-  const d = new Date(date);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}/${m}/${day}/${file.replace(/\.md$/, '')}`;
+function oldDir(file, slug) {
+  const md = fs.readFileSync(path.join(SITE, 'src/content/posts', `${slug}.md`), 'utf8');
+  // Preserve the calendar date in the original permalink across build time zones.
+  const date = md.match(/^date:[ \t]*"(\d{4}-\d{2}-\d{2})(?=[" T])/m)?.[1];
+  if (!date) throw new Error(`Missing or invalid permalink date in ${slug}.md`);
+  return `${date.replaceAll('-', '/')}/${file.replace(/\.md$/, '')}`;
 }
 
 const redirects = [];
 for (const { file, slug } of report) {
-  redirects.push({ from: `/blog/${oldDir(file)}/`, to: `/blog/posts/${slug}/` });
+  redirects.push({ from: `/blog/${oldDir(file, slug)}/`, to: `/blog/posts/${slug}/` });
 }
 
 const template = (to) => `<!DOCTYPE html>
