@@ -69,7 +69,7 @@ console.log(a);
 
 #### output:
 
-![output](/blog/assets/image/object.png)
+![output](/assets/image/object.png)
 
 从上图可以看到，使用`{}`新创建的对象，继承了`Object`自身的属性，例如`hasOwnProperty`、`toString`等，在新对象上可以直接使用。
 
@@ -90,7 +90,7 @@ console.log(o);
 
 #### output:
 
-![output](/blog/assets/image/object-create.png)
+![output](/assets/image/object-create.png)
 
 由上图可见：新创建的属性，只有个自身一个属性`a`，其原型链上没有其他任何属性。也就是没有继承`Object`任何属性。若此时我们访问`o.toString()`会报错`Uncaught TypeError`。
 
@@ -110,7 +110,7 @@ console.log(o);
 
 #### output:
 
-![output](/blog/assets/image/object-null.png)
+![output](/assets/image/object-null.png)
 
 此时不难发现，此时已经具有了和`{}`几乎一样的属性了，除了多了一层`_proto_`。
 
@@ -129,7 +129,7 @@ console.log(o);
 
 #### output:
 
-![output](/blog/assets/image/object-proto.png)
+![output](/assets/image/object-proto.png)
 
 此时，已经和直接使用`{}`一样了。
 

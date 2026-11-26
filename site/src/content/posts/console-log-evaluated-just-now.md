@@ -11,7 +11,7 @@ description: "偶然一次，在浏览器控制台，使用console.log()打印�
 
 ## 现象：
 
-![value-null](/blog/assets/image/value-null.png)
+![value-null](/assets/image/value-null.png)
 
 
 

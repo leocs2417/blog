@@ -101,14 +101,14 @@ for (const { file, slug } of report) {
   // images
   const badImg = [...html.matchAll(/<img[^>]*src="([^"]+)"/g)]
     .map(m => m[1])
-    .filter(src => src.startsWith('/') && !fs.existsSync(path.join(DIST, decodeURIComponent(src.replace(/^\/blog\/?/, '')))));
+    .filter(src => src.startsWith('/') && !fs.existsSync(path.join(DIST, decodeURIComponent(src.slice(1)))));
   check(`T-B05 ${slug} images`, badImg.length === 0, badImg.join(','));
 }
 
 // ---------- T-B07: redirect pages ----------
 const redirects = JSON.parse(fs.readFileSync(path.join(DIST, 'redirect-map.json'), 'utf8'));
 const redirectOk = redirects.every(r => {
-  const rel = r.from.replace(/^\/blog\//, '');
+  const rel = r.from.slice(1);
   const f = path.join(DIST, rel, 'index.html');
   return fs.existsSync(f) && readHtml(f).includes(`url=${r.to}`);
 });
@@ -120,8 +120,8 @@ check('T-B07 redirect pages', redirectOk && redirects.length === 17, `${redirect
   for (const f of walk(DIST)) {
     if (!f.endsWith('.html')) continue;
     const html = readHtml(f);
-    for (const m of html.matchAll(/(?:href|src)="(\/blog\/[^"#?]*)["?]/g)) {
-      let p = decodeURIComponent(m[1]).replace(/^\/blog\/?/, '');
+    for (const m of html.matchAll(/(?:href|src)="(\/(?!\/)[^"#?]*)["?]/g)) {
+      let p = decodeURIComponent(m[1]).slice(1);
       if (p === '' || p.endsWith('/')) p += 'index.html';
       else if (!path.extname(p)) p += '/index.html';
       if (!fs.existsSync(path.join(DIST, p))) bad.push(m[1] + ' (in ' + path.relative(DIST, f) + ')');
@@ -133,7 +133,7 @@ check('T-B07 redirect pages', redirectOk && redirects.length === 17, `${redirect
 // ---------- Browser tests ----------
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new' });
-const B = 'http://localhost:4321/blog';
+const B = 'http://localhost:4321';
 
 // start preview server
 const { spawn } = await import('node:child_process');

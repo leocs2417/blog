@@ -3,7 +3,7 @@ Thumbs.db
 db.json
 *.log
 node_modules/
-public/
+/public/
 .deploy*/
 
 themes/next/node_modules/
@@ -13,3 +13,5 @@ site/node_modules/
 site/dist/
 site/test-results/
 site/.astro/
+site/public/legacy/
+site/public/redirect-map.json

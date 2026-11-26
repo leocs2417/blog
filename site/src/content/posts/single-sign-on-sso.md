@@ -28,7 +28,7 @@ description: "是现阶段较流行的企业业务整合的解决方案之一。
 ### 3. 真正的单点登录实现逻辑
 
   通常我们所指的单点登录，是在不同域下的。
-  ![sso](/blog/assets/image/sso.png)
+  ![sso](/assets/image/sso.png)
 
   上图为CAS官网上的标准流程图，具体流程如下：
 

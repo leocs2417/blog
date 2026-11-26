@@ -2,8 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://leocs2417.github.io',
-  base: '/blog',
+  site: 'http://82.157.148.18:8089',
   trailingSlash: 'always',
   build: {
     format: 'directory',
