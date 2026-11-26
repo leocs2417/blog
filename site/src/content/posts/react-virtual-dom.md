@@ -160,12 +160,12 @@ render() {
 
 - 问题3：setSate 关键字：异步 (为什么？若连续setState三次，之更新一次虚拟DOM)
 
-  ![state](/blog/assets/image/reactState.jpg)
+  ![state](/assets/image/reactState.jpg)
 
 - 问题4：怎么比对的？逻辑是什么？
 
   从顶层开始，逐层，同层比对：
-  ![diff](/blog/assets/image/reactDiff.jpg)
+  ![diff](/assets/image/reactDiff.jpg)
 
   a. 做法：若某一层不同，下边所有节点全部更新。
 
@@ -175,7 +175,7 @@ render() {
 
 3. without keys VS with keys
 
-    ![keys](/blog/assets/image/reactKeys.jpg)
+    ![keys](/assets/image/reactKeys.jpg)
 
     场景：
 

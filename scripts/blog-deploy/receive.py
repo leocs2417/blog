@@ -65,4 +65,4 @@ if __name__ == "__main__":
     match = re.fullmatch(r"publish ([0-9a-f]{40})", command)
     if not match:
         sys.exit("Expected publish followed by a full Git revision")
-    publish(Path("/srv/blog"), match[1], "http://127.0.0.1:8089/blog")
+    publish(Path("/srv/blog"), match[1], "http://127.0.0.1:8089")

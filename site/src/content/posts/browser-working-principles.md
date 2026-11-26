@@ -57,7 +57,7 @@ description: "浏览器的工作原理及JS的运行机制。 大纲 浏览器�
 
 参考图：
 
-![](/blog/assets/image/process.png)
+![](/assets/image/process.png)
 
 ### 多进程的优势？
 
@@ -136,7 +136,7 @@ description: "浏览器的工作原理及JS的运行机制。 大纲 浏览器�
 4. 根据Render Tree开始渲染和展示。
 5. 遇见**&lt;script>**标签，执行，并阻塞渲染。（与JS引擎线程互斥）
 
-参考图：![Render process](/blog/assets/image/render-page.png)
+参考图：![Render process](/assets/image/render-page.png)
 
 ### WebWorker（HTML5 API）（简略）
 
@@ -194,7 +194,7 @@ description: "浏览器的工作原理及JS的运行机制。 大纲 浏览器�
     - Browser进程收到结果并将结果绘制出来。
 
 通信的过程参考图：
-![Browser communication](/blog/assets/image/browser-communication.png)
+![Browser communication](/assets/image/browser-communication.png)
 
 ## V8工作原理（简略）
 
@@ -235,7 +235,7 @@ description: "浏览器的工作原理及JS的运行机制。 大纲 浏览器�
 - 一旦**执行栈**中的同步任务全部执行完毕，即此时JS引擎线程空闲，就会开始读取任务队列，将可运行的异步任务加到执行栈中，开始执行。
 
 流程如图：
-    ![Event process img](/blog/assets/image/evt.png)
+    ![Event process img](/assets/image/evt.png)
 
 ### 定时器：
 
@@ -312,7 +312,7 @@ eg.
 
 如图：
 
-![task img](/blog/assets/image/task.png)
+![task img](/assets/image/task.png)
 
 一段代码：
 

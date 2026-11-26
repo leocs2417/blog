@@ -16,7 +16,7 @@ description: "前一段时间电脑上的Sublime Text3 突然不太好用，索�
 **步骤如下：**
 
 首先，在编辑器安装路径下，找到  **PackageControl.sublime-settings**文件，将**debug**设为**true**。
-![](/blog/assets/image/sublime-text-debug.png)
+![](/assets/image/sublime-text-debug.png)
 
 
 然后，打开编辑器的**调试窗口**，再次进行打开**Package Control** 的操作。

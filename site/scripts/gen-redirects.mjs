@@ -16,7 +16,7 @@ function oldDir(file, slug) {
 
 const redirects = [];
 for (const { file, slug } of report) {
-  redirects.push({ from: `/blog/${oldDir(file, slug)}/`, to: `/blog/posts/${slug}/` });
+  redirects.push({ from: `/${oldDir(file, slug)}/`, to: `/posts/${slug}/` });
 }
 
 const template = (to) => `<!DOCTYPE html>
@@ -32,7 +32,7 @@ const template = (to) => `<!DOCTYPE html>
 `;
 
 for (const { from, to } of redirects) {
-  const rel = from.replace(/^\/blog\//, '');
+  const rel = from.slice(1);
   const dir = path.join(DIST, rel);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), template(to));
