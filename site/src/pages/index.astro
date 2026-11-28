@@ -7,8 +7,6 @@ import { sortPosts, BASE } from '../lib/utils';
 
 const posts = sortPosts(await getCollection('posts')).slice(0, 8);
 const total = sortPosts(await getCollection('posts')).length;
-// Re-enable after the public security website filing is complete.
-const showProjects = false;
 ---
 <BaseLayout title="Leo Chen 的个人空间" active="home">
   <main>
@@ -33,22 +31,20 @@ const showProjects = false;
       <img class="avatar" src={`${BASE}assets/avatar.jpeg`} alt="Leo Chen 的头像" width="132" height="132">
     </header>
 
-    {showProjects && (
-      <section class="wrap" style="padding-bottom:64px">
-        <h2 class="section-title">作品集 / Projects</h2>
-        <div style="display:grid; grid-template-columns:1fr; max-width:480px; gap:16px">
-          <ProjectCard
-            title="个人智能助手平台"
-            subtitle="AI Agent · Self-hosted"
-            description="面向个人场景的自托管 AI Agent 平台，将对话、任务与工具能力集中到统一入口，用于搭建可控的个人智能工作流。"
-            links={[
-              { label: '交互演示', href: 'http://82.157.148.18:8082', primary: true },
-              { label: '正式应用', href: 'http://82.157.148.18:8080', requiresLogin: true },
-            ]}
-          />
-        </div>
-      </section>
-    )}
+    <section class="wrap" style="padding-bottom:64px">
+      <h2 class="section-title">作品集 / Projects</h2>
+      <div style="display:grid; grid-template-columns:1fr; max-width:480px; gap:16px">
+        <ProjectCard
+          title="个人智能助手平台"
+          subtitle="AI Agent · Self-hosted"
+          description="面向个人场景的自托管 AI Agent 平台，将对话、任务与工具能力集中到统一入口，用于搭建可控的个人智能工作流。"
+          links={[
+            { label: '演示版', href: 'https://agent-demo.aileo.site/', primary: true },
+            { label: '正式环境', href: 'https://agent.aileo.site/', requiresLogin: true },
+          ]}
+        />
+      </div>
+    </section>
 
     <section class="wrap" style="padding-bottom:64px">
       <div class="section-title">最新文章 / Posts</div>
